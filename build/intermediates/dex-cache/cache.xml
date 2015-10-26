@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivst\app\build\intermediates\exploded-aar\com.getbase\floatingactionbutton\1.10.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="f40cf334cdc8b098b74312e21c7741c6eefbeb0e">
+        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivst\app\build\intermediates\pre-dexed\debug\classes-bc5a7d83fdfeb82faf1d65e5c3c35394b5c1154a.jar" />
+    </item>
+
+</items>

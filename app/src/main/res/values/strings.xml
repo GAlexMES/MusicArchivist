@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MusicArchivist</string>
+    <string name="action_settings">Settings</string>
+
+
+    <string name="button_scan">Scan Code</string>
+    <string name="button_find_information">Find information about the scanned CD</string>
+
+</resources>
