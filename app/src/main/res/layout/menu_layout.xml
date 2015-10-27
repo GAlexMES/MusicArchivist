@@ -24,15 +24,25 @@
             android:id="@+id/scan_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/ic_barcode"
             fab:fab_colorNormal="@color/colorPrimary"
             fab:fab_title="@string/button_scan"
             fab:fab_colorPressed="@color/colorPrimary_pressed"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/type_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/colorPrimary"
-            fab:fab_title="Another one on the right"
+            fab:fab_title="@string/button_type_code"
+            fab:fab_colorPressed="@color/colorPrimary_pressed"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/type_information"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/colorPrimary"
+            fab:fab_title="@string/button_type_information"
             fab:fab_colorPressed="@color/colorPrimary_pressed"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>

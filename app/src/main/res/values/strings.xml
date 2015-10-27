@@ -4,6 +4,17 @@
 
 
     <string name="button_scan">Scan Code</string>
-    <string name="button_find_information">Find information about the scanned CD</string>
+    <string name="button_type_code">Type Code</string>
+    <string name="button_type_information">Type Information</string>
+
+    <string name="barcode_type_dialog_title">Type Barcode</string>
+    <string name="barcode_format">Format</string>
+
+    <string name="barcode_code">Barcode</string>
+    <string-array name="barcode_formats">
+        <item>UPC</item>
+        <item>EAN</item>
+        <item>ITF</item>
+    </string-array>
 
 </resources>

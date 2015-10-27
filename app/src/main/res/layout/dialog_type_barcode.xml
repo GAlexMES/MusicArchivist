@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/type_format"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingBottom="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/format"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/barcode_format"
+            android:textSize="14sp"
+            android:layout_marginLeft="8dp"
+            />
+
+        <Spinner
+            android:id="@+id/format_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/barcode_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:hint="@string/barcode_code"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_below="@+id/content"
+        android:id="@+id/buttonBar"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="52dp" android:orientation="horizontal"
+        android:layout_width="fill_parent">
+
+        <com.gc.materialdesign.views.ButtonFlat
+            android:id="@+id/acceptButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@color/colorPrimary"
+            android:text="Accept"
+            android:layout_alignParentRight="true"/>
+
+        <com.gc.materialdesign.views.ButtonFlat
+            android:id="@+id/cancleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@color/colorPrimary"
+            android:text="Cancle"
+            android:layout_toLeftOf="@id/acceptButton"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>
+

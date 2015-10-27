@@ -3,40 +3,44 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="75dp">
+    android:layout_marginTop="24dp"
+    >
 
-    <TextView
+    <EditText
         android:id="@+id/artist_name_text"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textIsSelectable="true"
         android:text=""
         android:layout_width="fill_parent"
-        android:gravity="center"
+        android:gravity="left"
         android:textStyle="bold"
+        android:inputType="text"
         android:textSize="30dp"
         />
 
-    <TextView
+    <EditText
         android:id="@+id/album_name_text"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textIsSelectable="true"
         android:text=""
         android:layout_width="fill_parent"
-        android:gravity="center"
+        android:gravity="left"
+        android:inputType="text"
         android:textStyle="bold"
         android:textSize="25dp"
         />
 
-    <TextView
+    <EditText
         android:id="@+id/genre_text"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textIsSelectable="true"
+        android:inputType="text"
         android:text=""
         android:layout_width="fill_parent"
-        android:gravity="center"
+        android:gravity="left"
         android:textSize="20dp"
         />
 
