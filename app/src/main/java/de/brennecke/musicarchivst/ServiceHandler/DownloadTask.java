@@ -62,7 +62,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
         mWakeLock.release();
         mProgressDialog.dismiss();
         if (this.result != null) {
-            editAlbumDataActivity.updateUI(this.result);
+            editAlbumDataActivity.setAlbum(this.result);
             Toast.makeText(context, "Information received", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();

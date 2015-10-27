@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MusicArchivist</string>
     <string name="action_settings">Settings</string>
+    <string name="action_save">Save</string>
 
 
     <string name="button_scan">Scan Code</string>

@@ -10,12 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import android.support.design.widget.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -44,34 +46,61 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         album = new Album();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_album_layout);
-        albumCoverImage = (ImageView) findViewById(R.id.image);
 
+        boolean showScanner = getIntent().getBooleanExtra("SHOW_SCANNER", false);
+        if (showScanner && !scannerShowed) {
+            scannerShowed = true;
+            IntentIntegrator scanIntegrator = new IntentIntegrator(EditAlbumDataActivity.this);
+            scanIntegrator.initiateScan();
+        }
+
+        initUI();
+    }
+
+    private void initUI(){
+        initTextFields();
+        initProgressDialog();
+        albumCoverImage = (ImageView) findViewById(R.id.image);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fabSaveButton = (FloatingActionButton) findViewById(R.id.fab_save_album);
+        if(fabSaveButton != null) {
+            fabSaveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    saveAlbumToDatabase();
+                }
+            });
+        }
+
+        updateUI();
+    }
+
+    private void initTextFields(){
         artistTxt = (EditText) findViewById(R.id.artist_name_text);
         addInputMethod(artistTxt);
         albumTxt = (EditText) findViewById(R.id.album_name_text);
         addInputMethod(albumTxt);
         genreTxt = (EditText) findViewById(R.id.genre_text);
         addInputMethod(genreTxt);
+    }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+    private void initProgressDialog(){
         mProgressDialog = new ProgressDialog(EditAlbumDataActivity.this);
         mProgressDialog.setMessage("Fetching data for your album!");
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(true);
+    }
 
-        boolean showScanner = getIntent().getBooleanExtra("SHOW_SCANNER", false);
-        if (showScanner && !scannerShowed) {
-            scannerShowed = true;
-            openScan();
-        }
-
-        updateTextView();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_edit_album, menu);
+        return true;
     }
 
     private void addInputMethod(EditText editText) {
@@ -88,7 +117,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 InputMethodManager m = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if(m != null){
+                if (m != null) {
                     m.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
                 }
             }
@@ -96,17 +125,18 @@ public class EditAlbumDataActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                saveAlbumToDatabase();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
-    private void updateTextView() {
-        collapsingToolbarLayout.setTitle(album.getArtist() + "-" + album.getTitle());
-        artistTxt.setText(album.getArtist());
-        albumTxt.setText(album.getTitle());
-        genreTxt.setText(album.getGenre());
-        albumCoverImage.setImageBitmap(album.getCoverBitmap());
+    private void saveAlbumToDatabase(){
+        Log.i("save","saveAlbum");
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -122,9 +152,12 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         }
     }
 
-    public void updateUI(Album album){
-        this.album = album;
-        updateTextView();
+    private void updateUI() {
+        collapsingToolbarLayout.setTitle(album.getArtist() + "-" + album.getTitle());
+        artistTxt.setText(album.getArtist());
+        albumTxt.setText(album.getTitle());
+        genreTxt.setText(album.getGenre());
+        albumCoverImage.setImageBitmap(album.getCoverBitmap());
     }
 
     private void showResult(String barcode) {
@@ -141,10 +174,8 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         });
     }
 
-    public void openScan() {
-        IntentIntegrator scanIntegrator = new IntentIntegrator(EditAlbumDataActivity.this);
-        scanIntegrator.initiateScan();
+    public void setAlbum(Album album){
+        this.album = album;
+        updateUI();
     }
-
-
 }
