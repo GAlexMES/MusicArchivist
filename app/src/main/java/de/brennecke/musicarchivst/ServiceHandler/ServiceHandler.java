@@ -1,4 +1,4 @@
-package de.brennecke.musicarchivst.ServiceHandler;
+package de.brennecke.musicarchivst.servicehandler;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

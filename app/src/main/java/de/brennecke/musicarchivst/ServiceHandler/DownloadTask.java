@@ -1,4 +1,4 @@
-package de.brennecke.musicarchivst.ServiceHandler;
+package de.brennecke.musicarchivst.servicehandler;
 
 import android.app.ProgressDialog;
 import android.content.Context;

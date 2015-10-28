@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,13 +18,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import android.support.design.widget.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import de.brennecke.musicarchivst.R;
-import de.brennecke.musicarchivst.ServiceHandler.DownloadTask;
 import de.brennecke.musicarchivst.model.Album;
+import de.brennecke.musicarchivst.servicehandler.DownloadTask;
+import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
 
 /**
  * Created by Alexander on 27.10.2015.
@@ -137,6 +138,10 @@ public class EditAlbumDataActivity extends AppCompatActivity {
 
     private void saveAlbumToDatabase(){
         Log.i("save","saveAlbum");
+        SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(EditAlbumDataActivity.this);
+        sqLiteSourceAdapter.open();
+        sqLiteSourceAdapter.addAlbum(album);
+        Log.i("save", "album saved");
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {

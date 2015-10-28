@@ -11,7 +11,7 @@ public class Album {
     private String genre="";
     private String albumCoverURL="";
     private Bitmap bitmap;
-
+    private long ID;
 
     public void setTitle(String title) {
         this.title = title;
@@ -51,6 +51,18 @@ public class Album {
 
     public void setCoverBitmap(Bitmap bm){
         this.bitmap=bm;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    public long getID() {
+        return ID;
+    }
+
+    public void setID(long ID) {
+        this.ID = ID;
     }
 }
 
