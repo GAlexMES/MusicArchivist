@@ -22,7 +22,7 @@ public class SQLiteSourceAdapter {
     private SQLiteDatabase database;
     private SQLiteHelper dbHelper;
     private String[] allColumns = {SQLiteHelper.COLUMN_ID,
-            SQLiteHelper.COLUMN_TITLE, SQLiteHelper.COLUMN_ARTIST, SQLiteHelper.COLUMN_BITMAP, SQLiteHelper.COLUMN_COVERURL, SQLiteHelper.COLUMN_GENRE};
+            SQLiteHelper.COLUMN_TITLE, SQLiteHelper.COLUMN_ARTIST, SQLiteHelper.COLUMN_BITMAP, SQLiteHelper.COLUMN_COVERURL, SQLiteHelper.COLUMN_GENRE, SQLiteHelper.COLUMN_DISCOGS_ID};
 
     public SQLiteSourceAdapter(Context context) {
         dbHelper = new SQLiteHelper(context);
@@ -64,8 +64,7 @@ public class SQLiteSourceAdapter {
     public List<Album> getAllAlbums() {
         List<Album> albumList = new ArrayList<Album>();
 
-        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
-                allColumns, null, null, null, null, null);
+        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,allColumns, "", null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -80,14 +79,14 @@ public class SQLiteSourceAdapter {
     private Album cursorToAlbum(Cursor cursor) {
         Album album = new Album();
         album.setID(cursor.getLong(cursor.getColumnIndex(SQLiteHelper.COLUMN_ID)));
-        album.setTitle(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_ID)));
-        album.setArtist(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_ID)));
-        album.setAlbumCoverURL(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_ID)));
+        album.setTitle(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_TITLE)));
+        album.setArtist(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_ARTIST)));
+        album.setAlbumCoverURL(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_COVERURL)));
 
-        byte[] bitmapBlob = cursor.getBlob(cursor.getColumnIndex(SQLiteHelper.COLUMN_ID));
+        byte[] bitmapBlob = cursor.getBlob(cursor.getColumnIndex(SQLiteHelper.COLUMN_BITMAP));
         album.setCoverBitmap(blobToBitmap(bitmapBlob));
 
-        album.setGenre(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_ID)));
+        album.setGenre(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_GENRE)));
         return album;
     }
 

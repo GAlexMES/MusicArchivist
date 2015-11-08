@@ -141,6 +141,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(EditAlbumDataActivity.this);
         sqLiteSourceAdapter.open();
         sqLiteSourceAdapter.addAlbum(album);
+        sqLiteSourceAdapter.close();
         Log.i("save", "album saved");
     }
 
