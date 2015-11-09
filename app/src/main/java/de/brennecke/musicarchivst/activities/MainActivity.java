@@ -3,50 +3,46 @@ package de.brennecke.musicarchivst.activities;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.SearchView;
-import android.widget.TextView;
-
-import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
 import de.brennecke.musicarchivst.R;
-import de.brennecke.musicarchivst.buttonlistener.MainActivityButtonListener;
-import de.brennecke.musicarchivst.buttonlistener.NavigationDrawerListener;
 import de.brennecke.musicarchivst.buttonlistener.SearchViewListener;
-import de.brennecke.musicarchivst.model.Album;
-import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
+import de.brennecke.musicarchivst.fragments.NewestFragment;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private SearchView searchView;
-    private String[] navDrawerItems = {"Artist","Album","Test"};
     private DrawerLayout drawerLayout;
-    private ListView drawerList;
+    private NavigationView navigationDrawer;
+    private ActionBarDrawerToggle drawerToggle;
+    private Toolbar toolbar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initToolbar();
-        initNavigationDrawer();
-        initFABButtons();
-        initCards(getApplicationContext());
+        initNavigationDrawer(getApplicationContext());
+        drawerToggle = setupDrawerToggle();
+        drawerLayout.setDrawerListener(drawerToggle);
+        MenuItem initItem = navigationDrawer.getMenu().getItem(0);
+        selectDrawerItem(initItem);
     }
 
     @Override
@@ -57,21 +53,96 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void initNavigationDrawer(){
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerList = (ListView) findViewById(R.id.left_drawer);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.action_settings:
+                return true;
+        }
 
-        NavigationDrawerListener ndw = new NavigationDrawerListener(navDrawerItems);
-        drawerList.setAdapter(ndw);
-        drawerList.setOnItemClickListener(ndw);
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
 
+        return super.onOptionsItemSelected(item);
     }
 
-    private void initToolbar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
+
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open,  R.string.drawer_close);
+    }
+
+    private void initNavigationDrawer(Context context) {
+        drawerLayout = (DrawerLayout) findViewById(R.id.main_layout);
+        navigationDrawer = (NavigationView) findViewById(R.id.navigationView);
+        navigationDrawer.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+        navigationDrawer.setCheckedItem(R.id.nav_newest);
+    }
+
+    private void initToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 
+    public void selectDrawerItem(MenuItem menuItem) {
+        Fragment fragment = null;
+
+        Class fragmentClass;
+        switch (menuItem.getItemId()) {
+            case R.id.nav_newest:
+                fragmentClass = NewestFragment.class;
+                break;
+            case R.id.nav_artist:
+                fragmentClass = NewestFragment.class;
+                break;
+            case R.id.nav_albums:
+                fragmentClass = NewestFragment.class;
+                break;
+            case R.id.nav_settings:
+                fragmentClass = NewestFragment.class;
+                break;
+            default:
+                fragmentClass = NewestFragment.class;
+        }
+
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.nav_drawer_content, fragment).commit();
+
+        menuItem.setChecked(true);
+        setTitle(menuItem.getTitle());
+        drawerLayout.closeDrawers();
+    }
 
     private void setupSearchView() {
         searchView.setIconifiedByDefault(true);
@@ -95,54 +166,4 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnCloseListener(new SearchViewListener());
     }
 
-    private void initFABButtons(){
-
-        FloatingActionButton scanButton = (FloatingActionButton) findViewById(R.id.scan_fab);
-        if(scanButton != null) {
-            scanButton.setOnClickListener(new MainActivityButtonListener(this));
-        }
-
-        FloatingActionButton typeCodeButton = (FloatingActionButton) findViewById(R.id.type_code);
-        if(typeCodeButton != null) {
-            typeCodeButton.setOnClickListener(new MainActivityButtonListener(this));
-        }
-    }
-
-    private void initCards(Context context){
-        ScrollView scrollView = (ScrollView) findViewById(R.id.album_scroll_view);
-        LinearLayout linearLayoutAlbum = (LinearLayout) scrollView.findViewById(R.id.lastAddedAlbumsLayout);
-        SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(context);
-        sqLiteSourceAdapter.open();
-
-        List<Album> albumList = sqLiteSourceAdapter.getAllAlbums();
-
-        for(int i = 0; i<albumList.size()&&i<5; i++) {
-            linearLayoutAlbum.addView(getAlbumCard(context,albumList.get(i)));
-        }
-    }
-
-    private View getAlbumCard(Context context, Album album){
-        LayoutInflater vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = vi.inflate(R.layout.album_card, null);
-
-        TextView artist_field = (TextView)v.findViewById(R.id.artist_name_text);
-        TextView album_field = (TextView)v.findViewById(R.id.album_title_text);
-        TextView genre_field = (TextView)v.findViewById(R.id.genre_text);
-        ImageView imageView = (ImageView)v.findViewById(R.id.album_cover);
-
-        artist_field.setText(album.getArtist());
-        album_field.setText(album.getTitle());
-        genre_field.setText((album.getGenre()));
-        imageView.setImageBitmap(album.getCoverBitmap());
-        return v;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

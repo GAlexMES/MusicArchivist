@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:checked="true"
+            android:id="@+id/nav_newest"
+            android:icon="@drawable/ic_perm_identity_white_24dp"
+            android:title="Newest" />
+        <item
+            android:id="@+id/nav_artist"
+            android:icon="@drawable/ic_perm_identity_white_24dp"
+            android:title="Artists" />
+        <item
+            android:id="@+id/nav_albums"
+            android:icon="@drawable/ic_perm_identity_white_24dp"
+            android:title="Albums" />
+    </group>
+
+    <item android:title="Sub items">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_perm_identity_white_24dp"
+                android:title="Settings" />
+        </menu>
+    </item>
+</menu>
