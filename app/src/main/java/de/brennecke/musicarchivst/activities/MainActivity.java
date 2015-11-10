@@ -21,6 +21,7 @@ import java.util.List;
 
 import de.brennecke.musicarchivst.R;
 import de.brennecke.musicarchivst.buttonlistener.SearchViewListener;
+import de.brennecke.musicarchivst.fragments.ArtistFragment;
 import de.brennecke.musicarchivst.fragments.NewestFragment;
 
 
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = NewestFragment.class;
                 break;
             case R.id.nav_artist:
-                fragmentClass = NewestFragment.class;
+                fragmentClass = ArtistFragment.class;
                 break;
             case R.id.nav_albums:
                 fragmentClass = NewestFragment.class;

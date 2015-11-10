@@ -1,14 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
+<FrameLayout
+    android:id="@+id/content_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ListView
-        android:id="@+id/myListView"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-    </ListView>
+        android:layout_height="fill_parent"
+        android:id="@+id/artist_list_linear_layout"
+       >
 
-</LinearLayout>
+        <ListView
+            android:id="@+id/artist_list_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:fadingEdge="vertical"
+            android:cacheColorHint="#00000000"
+            android:fastScrollEnabled="true"
+            android:padding="2dp">
+        </ListView>
+    </LinearLayout>
+</FrameLayout>
