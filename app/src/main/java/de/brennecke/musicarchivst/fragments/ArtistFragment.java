@@ -44,9 +44,29 @@ public class ArtistFragment extends Fragment {
         SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(getActivity());
         sqLiteSourceAdapter.open();
         artistList = sqLiteSourceAdapter.getAllArtists();
-        List<String> copyArtistList = new ArrayList();
+        sortArtistList();
         albumListAdapter = new AlbumListAdapter(getActivity(),artistList);
         listView.setAdapter(albumListAdapter);
+    }
+
+    private void sortArtistList(){
+        List<Album> albumList = new ArrayList<>();
+        List<String> artistNames = new ArrayList<>();
+        for(Album a : artistList){
+            artistNames.add(a.getArtist());
+        }
+        Collections.sort(artistNames);
+
+        for(String s:artistNames){
+            for(Album a:artistList){
+                if(a.getArtist().equals(s)){
+                    albumList.add(a);
+                    break;
+                }
+            }
+        }
+
+        artistList = albumList;
     }
 
     class AlbumListAdapter extends ArrayAdapter<Album> implements SectionIndexer {
