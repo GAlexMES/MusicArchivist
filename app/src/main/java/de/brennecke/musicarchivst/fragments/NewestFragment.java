@@ -17,6 +17,7 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 import de.brennecke.musicarchivst.R;
+import de.brennecke.musicarchivst.activities.MainActivity;
 import de.brennecke.musicarchivst.buttonlistener.FABNewAlbumListener;
 import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
@@ -41,12 +42,12 @@ public class NewestFragment extends Fragment {
 
         FloatingActionButton scanButton = (FloatingActionButton) view.findViewById(R.id.scan_fab);
         if (scanButton != null) {
-            scanButton.setOnClickListener(new FABNewAlbumListener(getActivity()));
+            scanButton.setOnClickListener(new FABNewAlbumListener((MainActivity)getActivity()));
         }
 
         FloatingActionButton typeCodeButton = (FloatingActionButton) view.findViewById(R.id.type_code);
         if (typeCodeButton != null) {
-            typeCodeButton.setOnClickListener(new FABNewAlbumListener(getActivity()));
+            typeCodeButton.setOnClickListener(new FABNewAlbumListener((MainActivity)getActivity()));
         }
     }
 

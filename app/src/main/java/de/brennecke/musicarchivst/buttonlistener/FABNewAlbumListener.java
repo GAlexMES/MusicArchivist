@@ -1,6 +1,5 @@
 package de.brennecke.musicarchivst.buttonlistener;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -8,6 +7,7 @@ import android.view.View;
 
 import de.brennecke.musicarchivst.R;
 import de.brennecke.musicarchivst.activities.EditAlbumDataActivity;
+import de.brennecke.musicarchivst.activities.MainActivity;
 import de.brennecke.musicarchivst.dialogs.TypeBarcodeDialog;
 
 /**
@@ -15,9 +15,9 @@ import de.brennecke.musicarchivst.dialogs.TypeBarcodeDialog;
  */
 public class FABNewAlbumListener implements View.OnClickListener {
 
-    private Activity activity;
+    private MainActivity activity;
 
-    public FABNewAlbumListener(Activity activity) {
+    public FABNewAlbumListener(MainActivity activity) {
         this.activity = activity;
     }
 
@@ -28,7 +28,6 @@ public class FABNewAlbumListener implements View.OnClickListener {
             Intent intentMain = new Intent(activity, EditAlbumDataActivity.class);
             intentMain.putExtra("SHOW_SCANNER", true);
             activity.startActivity(intentMain);
-
         } else if (v.getId() == R.id.type_code) {
             FragmentManager manager = activity.getFragmentManager();
             Fragment frag = manager.findFragmentByTag("fragment_edit_name");

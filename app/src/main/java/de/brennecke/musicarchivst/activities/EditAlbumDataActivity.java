@@ -46,7 +46,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         album = new Album();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.edit_album_layout);
+        setContentView(R.layout.fragment_edit_album);
 
         boolean showScanner = getIntent().getBooleanExtra("SHOW_SCANNER", false);
         if (showScanner && !scannerShowed) {

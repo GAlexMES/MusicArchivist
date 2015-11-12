@@ -86,9 +86,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private ActionBarDrawerToggle setupDrawerToggle() {
-        return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open,  R.string.drawer_close);
+        return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
     }
 
     private void initNavigationDrawer(Context context) {
@@ -131,6 +130,14 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = NewestFragment.class;
         }
 
+        setFragment(fragmentClass);
+        menuItem.setChecked(true);
+        setTitle(menuItem.getTitle());
+        drawerLayout.closeDrawers();
+    }
+
+    public void setFragment(Class fragmentClass) {
+        Fragment fragment = null;
         try {
             fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {
@@ -139,10 +146,6 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.nav_drawer_content, fragment).commit();
-
-        menuItem.setChecked(true);
-        setTitle(menuItem.getTitle());
-        drawerLayout.closeDrawers();
     }
 
     private void setupSearchView() {

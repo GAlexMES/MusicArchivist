@@ -62,6 +62,7 @@ public class SQLiteSourceAdapter {
     }
 
     public List<Album> getAllArtists() {
+        List<String> artistNames = new ArrayList<>();
         List<Album> artistList = new ArrayList<Album>();
         Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM, allColumns, "", null, null, null, null);
 
@@ -69,8 +70,9 @@ public class SQLiteSourceAdapter {
         while (!cursor.isAfterLast()) {
             Album album = cursorToAlbum(cursor);
             String artist = album.getArtist();
-            if (!artistList.contains(artist)) {
+            if (!artistNames.contains(artist)) {
                 artistList.add(album);
+                artistNames.add(artist);
             }
             cursor.moveToNext();
         }

@@ -44,6 +44,7 @@ public class ArtistFragment extends Fragment {
         SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(getActivity());
         sqLiteSourceAdapter.open();
         artistList = sqLiteSourceAdapter.getAllArtists();
+        List<String> copyArtistList = new ArrayList();
         albumListAdapter = new AlbumListAdapter(getActivity(),artistList);
         listView.setAdapter(albumListAdapter);
     }
