@@ -143,6 +143,14 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         sqLiteSourceAdapter.addAlbum(album);
         sqLiteSourceAdapter.close();
         Log.i("save", "album saved");
+
+        CharSequence text = "Album saved!";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+        toast.show();
+
+        finish();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
