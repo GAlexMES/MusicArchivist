@@ -143,7 +143,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        showFragment(fragment);
+    }
 
+    public void showFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.nav_drawer_content, fragment).commit();
     }

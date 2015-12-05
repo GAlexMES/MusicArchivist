@@ -51,6 +51,7 @@ public class SQLiteSourceAdapter {
     public Album getAlbum(String artist, String title) {
         String condition = SQLiteHelper.COLUMN_ARTIST + "=" + artist + " AND "
                 + SQLiteHelper.COLUMN_TITLE + "=" + title;
+
         Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
                 allColumns, condition, null,
                 null, null, null);
@@ -78,6 +79,24 @@ public class SQLiteSourceAdapter {
         }
         cursor.close();
         return artistList;
+    }
+
+    public List<Album> getAlbums(String artistName){
+        List<Album> albumList = new ArrayList<Album>();
+
+        String condition = SQLiteHelper.COLUMN_ARTIST + "='" + artistName+"'";
+        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
+                allColumns, condition, null,
+                null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Album album = cursorToAlbum(cursor);
+            albumList.add(album);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return albumList;
     }
 
     public List<Album> getAllAlbums() {

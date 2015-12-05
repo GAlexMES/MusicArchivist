@@ -60,7 +60,8 @@ public class NewestFragment extends Fragment {
         List<Album> albumList = sqLiteSourceAdapter.getAllAlbums();
 
         for (int i = 0; i < albumList.size() && i < 5; i++) {
-            linearLayoutAlbum.addView(getAlbumCard(getActivity(), albumList.get(i)));
+            Album album =  albumList.get(albumList.size()-1-i);
+            linearLayoutAlbum.addView(getAlbumCard(getActivity(),album));
         }
     }
 
