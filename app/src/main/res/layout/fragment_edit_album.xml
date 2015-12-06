@@ -52,7 +52,7 @@
             android:clipToPadding="false"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <include layout="@layout/album_content" />
+            <include layout="@layout/edit_album_content" />
         </android.support.v4.widget.NestedScrollView>
 
         <android.support.design.widget.FloatingActionButton

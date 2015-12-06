@@ -21,6 +21,7 @@ import java.util.List;
 
 import de.brennecke.musicarchivst.R;
 import de.brennecke.musicarchivst.buttonlistener.SearchViewListener;
+import de.brennecke.musicarchivst.dialogs.AboutDialog;
 import de.brennecke.musicarchivst.fragments.ArtistFragment;
 import de.brennecke.musicarchivst.fragments.NewestFragment;
 
@@ -126,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_settings:
                 fragmentClass = NewestFragment.class;
                 break;
+            case R.id.nav_about:
+                showAboutDialog();
             default:
                 fragmentClass = NewestFragment.class;
         }
@@ -134,6 +137,17 @@ public class MainActivity extends AppCompatActivity {
         menuItem.setChecked(true);
         setTitle(menuItem.getTitle());
         drawerLayout.closeDrawers();
+    }
+
+    private void showAboutDialog(){
+        android.app.FragmentManager manager = getFragmentManager();
+        android.app.Fragment frag = manager.findFragmentByTag("dialog_about");
+        if (frag != null) {
+            manager.beginTransaction().remove(frag).commit();
+        }
+        AboutDialog aboutDialog = new AboutDialog();
+        aboutDialog.show(manager, "fragment_about_name");
+
     }
 
     public void setFragment(Class fragmentClass) {

@@ -114,6 +114,15 @@ public class SQLiteSourceAdapter {
         return albumList;
     }
 
+    public boolean existsAlbumInDB(Album currentAlbum) {
+
+        String condition = SQLiteHelper.COLUMN_ARTIST + "='" + currentAlbum.getArtist()+"' AND "+ SQLiteHelper.COLUMN_TITLE+"='"+currentAlbum.getTitle()+"'";
+        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
+                allColumns, condition, null,
+                null, null, null);
+        return cursor.getCount() == 0 ?false:true;
+    }
+
     private Album cursorToAlbum(Cursor cursor) {
         Album album = new Album();
         album.setID(cursor.getLong(cursor.getColumnIndex(SQLiteHelper.COLUMN_ID)));

@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar" >
 
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".activities.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -22,7 +23,10 @@
         </activity>
 
         <activity android:name=".activities.EditAlbumDataActivity"
-            android:screenOrientation="portrait">>
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".fragments.ShowAlbumActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

@@ -53,10 +53,6 @@ public class Album {
         this.bitmap=bm;
     }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
-
     public long getID() {
         return ID;
     }

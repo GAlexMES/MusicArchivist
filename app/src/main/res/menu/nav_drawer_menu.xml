@@ -17,12 +17,16 @@
             android:title="Albums" />
     </group>
 
-    <item android:title="Sub items">
+    <item android:title="Additional">
         <menu>
             <item
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_perm_identity_white_24dp"
                 android:title="Settings" />
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_perm_identity_white_24dp"
+                android:title="About" />
         </menu>
     </item>
 </menu>

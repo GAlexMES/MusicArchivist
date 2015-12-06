@@ -23,6 +23,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import de.brennecke.musicarchivst.R;
 import de.brennecke.musicarchivst.model.Album;
+import de.brennecke.musicarchivst.model.Exchange;
 import de.brennecke.musicarchivst.servicehandler.DownloadTask;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
 
@@ -53,12 +54,16 @@ public class EditAlbumDataActivity extends AppCompatActivity {
             scannerShowed = true;
             IntentIntegrator scanIntegrator = new IntentIntegrator(EditAlbumDataActivity.this);
             scanIntegrator.initiateScan();
+        } else {
+            boolean showExisiting = getIntent().getBooleanExtra("SHOW_EXISTING", false);
+            if (showExisiting) {
+                album = Exchange.getInstance().getCurrentAlbum();
+            }
         }
-
         initUI();
     }
 
-    private void initUI(){
+    private void initUI() {
         initTextFields();
         initProgressDialog();
         albumCoverImage = (ImageView) findViewById(R.id.image);
@@ -69,7 +74,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fabSaveButton = (FloatingActionButton) findViewById(R.id.fab_save_album);
-        if(fabSaveButton != null) {
+        if (fabSaveButton != null) {
             fabSaveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -81,7 +86,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         updateUI();
     }
 
-    private void initTextFields(){
+    private void initTextFields() {
         artistTxt = (EditText) findViewById(R.id.artist_name_text);
         addInputMethod(artistTxt);
         albumTxt = (EditText) findViewById(R.id.album_name_text);
@@ -90,7 +95,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         addInputMethod(genreTxt);
     }
 
-    private void initProgressDialog(){
+    private void initProgressDialog() {
         mProgressDialog = new ProgressDialog(EditAlbumDataActivity.this);
         mProgressDialog.setMessage("Fetching data for your album!");
         mProgressDialog.setIndeterminate(true);
@@ -109,7 +114,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 InputMethodManager m = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if(m != null){
+                if (m != null) {
                     m.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
                 }
             }
@@ -136,11 +141,16 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         }
     }
 
-    private void saveAlbumToDatabase(){
-        Log.i("save","saveAlbum");
+    private void saveAlbumToDatabase() {
+        Log.i("save", "saveAlbum");
+
         SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(EditAlbumDataActivity.this);
         sqLiteSourceAdapter.open();
-        sqLiteSourceAdapter.addAlbum(album);
+        Album currentAlbum = getCurrentEnteredValues();
+        boolean alreadyExist = sqLiteSourceAdapter.existsAlbumInDB(currentAlbum);
+        if (!alreadyExist) {
+            sqLiteSourceAdapter.addAlbum(getCurrentEnteredValues());
+        }
         sqLiteSourceAdapter.close();
         Log.i("save", "album saved");
 
@@ -151,6 +161,16 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         toast.show();
 
         finish();
+    }
+
+    private Album getCurrentEnteredValues() {
+        Album retval = new Album();
+        retval.setAlbumCoverURL(album.getAlbumCoverURL());
+        retval.setCoverBitmap(album.getCoverBitmap());
+        retval.setArtist(artistTxt.getText().toString());
+        retval.setGenre(genreTxt.getText().toString());
+        retval.setTitle(albumTxt.getText().toString());
+        return retval;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -188,7 +208,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         });
     }
 
-    public void setAlbum(Album album){
+    public void setAlbum(Album album) {
         this.album = album;
         updateUI();
     }

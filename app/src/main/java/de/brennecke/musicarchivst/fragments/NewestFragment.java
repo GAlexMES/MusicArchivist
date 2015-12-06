@@ -2,8 +2,11 @@ package de.brennecke.musicarchivst.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +16,18 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import de.brennecke.musicarchivst.R;
 import de.brennecke.musicarchivst.activities.MainActivity;
 import de.brennecke.musicarchivst.buttonlistener.FABNewAlbumListener;
 import de.brennecke.musicarchivst.model.Album;
+import de.brennecke.musicarchivst.model.Exchange;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
 
 /**
@@ -34,8 +42,44 @@ public class NewestFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_newest_additions, container, false);
         initFABButtons();
+        initAd();
         initCards();
         return view;
+    }
+
+    private void initAd(){
+        AdView mAdView = (AdView) view.findViewById(R.id.adView);
+        String android_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+        String deviceId = md5(android_id).toUpperCase();
+        Log.d("id",deviceId);
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice(deviceId)
+                .build();
+        mAdView.loadAd(request);
+    }
+
+    public static final String md5(final String s) {
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance("MD5");
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuffer hexString = new StringBuffer();
+            for (int i = 0; i < messageDigest.length; i++) {
+                String h = Integer.toHexString(0xFF & messageDigest[i]);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+        }
+        return "";
     }
 
     private void initFABButtons() {
@@ -78,6 +122,24 @@ public class NewestFragment extends Fragment {
         album_field.setText(album.getTitle());
         genre_field.setText((album.getGenre()));
         imageView.setImageBitmap(album.getCoverBitmap());
+
+        AlbumCardListener acl =  new AlbumCardListener(album);
+        v.setOnClickListener(acl);
         return v;
+    }
+
+    private class AlbumCardListener implements View.OnClickListener{
+
+        Album album;
+        public AlbumCardListener(Album album){
+            this.album = album;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Exchange.getInstance().setCurrentAlbum(album);
+            Intent intentMain = new Intent(getActivity(), ShowAlbumActivity.class);
+            getActivity().startActivity(intentMain);
+        }
     }
 }
