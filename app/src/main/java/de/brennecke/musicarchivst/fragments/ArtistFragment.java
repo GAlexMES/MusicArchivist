@@ -74,6 +74,7 @@ public class ArtistFragment extends Fragment implements AdapterView.OnItemClickL
 
         Fragment albumFragment = new AlbumListFragment();
         ((AlbumListFragment)albumFragment).setArtistName(selectedArtist);
+        ((AlbumListFragment)albumFragment).setAlbums(artistAlbums);
 
         ((MainActivity) getActivity()).showFragment(albumFragment);
     }

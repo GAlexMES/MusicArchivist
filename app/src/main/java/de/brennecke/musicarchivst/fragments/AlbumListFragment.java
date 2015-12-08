@@ -22,45 +22,58 @@ import de.brennecke.musicarchivst.view.AlphabeticList;
 /**
  * Created by Alexander on 05.12.2015.
  */
-public class AlbumListFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class AlbumListFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private String artistName;
     private AlphabeticList alphabeticList;
 
     private String[] sortedAlbums;
-    private Map<String,Album> albumMap;
+    private Map<String, Album> albumMap;
     private View view;
     private List<Album> albumList;
+
+    public AlbumListFragment(){
+        albumList = new ArrayList<>();
+        albumMap = new HashMap<>();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        albumList = getAlbumsFromDB();
+        if (albumList.size()==0) {
+            albumList = getAlbumsFromDB();
+        }
         sortedAlbums = sortList();
-        alphabeticList = new AlphabeticList(sortedAlbums,this);
-        view = alphabeticList.createView(inflater,container, getActivity());
+        alphabeticList = new AlphabeticList(sortedAlbums, this);
+        view = alphabeticList.createView(inflater, container, getActivity());
         return view;
     }
 
-    private String[] sortList(){
-        albumMap = new HashMap<>();
-        for(Album a:albumList){
-            albumMap .put(a.getTitle(), a);
+    public void setAlbums(List<Album> albums) {
+        for (Album a : albums) {
+            albumMap.put(a.getTitle(), a);
+            albumList.add(a);
+        }
+    }
+
+    private String[] sortList() {
+        for (Album a : albumList) {
+            albumMap.put(a.getTitle(), a);
         }
         List<String> albumNames = new ArrayList<>();
-        albumNames.addAll(albumMap .keySet());
+        albumNames.addAll(albumMap.keySet());
         Collections.sort(albumNames);
         return albumNames.toArray(new String[albumNames.size()]);
     }
 
-    private List<Album> getAlbumsFromDB(){
+    private List<Album> getAlbumsFromDB() {
         SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(getActivity());
         sqLiteSourceAdapter.open();
         List<Album> retval = sqLiteSourceAdapter.getAlbums(artistName);
         return retval;
     }
 
-    public void setArtistName(String artistName){
+    public void setArtistName(String artistName) {
         this.artistName = artistName;
     }
 

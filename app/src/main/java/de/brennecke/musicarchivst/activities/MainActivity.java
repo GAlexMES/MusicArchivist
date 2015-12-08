@@ -22,8 +22,11 @@ import java.util.List;
 import de.brennecke.musicarchivst.R;
 import de.brennecke.musicarchivst.buttonlistener.SearchViewListener;
 import de.brennecke.musicarchivst.dialogs.AboutDialog;
+import de.brennecke.musicarchivst.fragments.AlbumListFragment;
 import de.brennecke.musicarchivst.fragments.ArtistFragment;
 import de.brennecke.musicarchivst.fragments.NewestFragment;
+import de.brennecke.musicarchivst.model.Album;
+import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -113,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
     public void selectDrawerItem(MenuItem menuItem) {
         Fragment fragment = null;
 
-        Class fragmentClass;
+        Class fragmentClass = null;
         switch (menuItem.getItemId()) {
             case R.id.nav_newest:
                 fragmentClass = NewestFragment.class;
@@ -122,24 +125,36 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = ArtistFragment.class;
                 break;
             case R.id.nav_albums:
-                fragmentClass = NewestFragment.class;
+                showAlbumList();
                 break;
             case R.id.nav_settings:
                 fragmentClass = NewestFragment.class;
                 break;
             case R.id.nav_about:
                 showAboutDialog();
+                break;
             default:
                 fragmentClass = NewestFragment.class;
         }
 
-        setFragment(fragmentClass);
+        if (fragmentClass != null) {
+            setFragment(fragmentClass);
+        }
         menuItem.setChecked(true);
         setTitle(menuItem.getTitle());
         drawerLayout.closeDrawers();
     }
 
-    private void showAboutDialog(){
+    private void showAlbumList() {
+        SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(this);
+        sqLiteSourceAdapter.open();
+        List<Album> albumList = sqLiteSourceAdapter.getAllAlbums();
+        Fragment albumFragment = new AlbumListFragment();
+        ((AlbumListFragment)albumFragment).setAlbums(albumList);
+        showFragment(albumFragment);
+    }
+
+    private void showAboutDialog() {
         android.app.FragmentManager manager = getFragmentManager();
         android.app.Fragment frag = manager.findFragmentByTag("dialog_about");
         if (frag != null) {
@@ -160,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         showFragment(fragment);
     }
 
-    public void showFragment(Fragment fragment){
+    public void showFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.nav_drawer_content, fragment).commit();
     }
