@@ -36,7 +36,7 @@ public class SQLiteSourceAdapter {
         dbHelper.close();
     }
 
-    public void addAlbum(Album album){
+    public void addAlbum(Album album) {
         ContentValues values = new ContentValues();
         values.put(SQLiteHelper.COLUMN_ARTIST, album.getArtist());
         values.put(SQLiteHelper.COLUMN_TITLE, album.getTitle());
@@ -49,8 +49,9 @@ public class SQLiteSourceAdapter {
     }
 
     public Album getAlbum(String artist, String title) {
-        String condition =  SQLiteHelper.COLUMN_ARTIST +"="+artist+" AND "
-                            + SQLiteHelper.COLUMN_TITLE+"="+title;
+        String condition = SQLiteHelper.COLUMN_ARTIST + "=" + artist + " AND "
+                + SQLiteHelper.COLUMN_TITLE + "=" + title;
+
         Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
                 allColumns, condition, null,
                 null, null, null);
@@ -61,10 +62,32 @@ public class SQLiteSourceAdapter {
         return newAlbum;
     }
 
-    public List<Album> getAllAlbums() {
+    public List<Album> getAllArtists() {
+        List<String> artistNames = new ArrayList<>();
+        List<Album> artistList = new ArrayList<Album>();
+        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM, allColumns, "", null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Album album = cursorToAlbum(cursor);
+            String artist = album.getArtist();
+            if (!artistNames.contains(artist)) {
+                artistList.add(album);
+                artistNames.add(artist);
+            }
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return artistList;
+    }
+
+    public List<Album> getAlbums(String artistName){
         List<Album> albumList = new ArrayList<Album>();
 
-        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,allColumns, "", null, null, null, null);
+        String condition = SQLiteHelper.COLUMN_ARTIST + "='" + artistName+"'";
+        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
+                allColumns, condition, null,
+                null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -74,6 +97,30 @@ public class SQLiteSourceAdapter {
         }
         cursor.close();
         return albumList;
+    }
+
+    public List<Album> getAllAlbums() {
+        List<Album> albumList = new ArrayList<Album>();
+
+        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM, allColumns, "", null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Album album = cursorToAlbum(cursor);
+            albumList.add(album);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return albumList;
+    }
+
+    public boolean existsAlbumInDB(Album currentAlbum) {
+
+        String condition = SQLiteHelper.COLUMN_ARTIST + "='" + currentAlbum.getArtist()+"' AND "+ SQLiteHelper.COLUMN_TITLE+"='"+currentAlbum.getTitle()+"'";
+        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
+                allColumns, condition, null,
+                null, null, null);
+        return cursor.getCount() == 0 ?false:true;
     }
 
     private Album cursorToAlbum(Cursor cursor) {

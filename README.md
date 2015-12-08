@@ -1,4 +1,4 @@
-# MusicArchivist
+# MusicArchivist [![Build Status](https://travis-ci.org/GAlexMES/MusicArchivist.svg?branch=master)](https://travis-ci.org/GAlexMES/MusicArchivist)
 Android Application, that allows the user to scan the barcode of his favorite CDs. The App shows detailed information about the scanned code. The scanned CDs can saved to your personal storage.
 
 # Used Libraries

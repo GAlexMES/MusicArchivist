@@ -17,6 +17,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/menu_layout" />
+    <include layout="@layout/fab_add_new_album" />
 
 </android.support.design.widget.CoordinatorLayout>
