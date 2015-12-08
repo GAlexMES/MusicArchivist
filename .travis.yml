@@ -13,6 +13,7 @@ android:
    - 'android-sdk-license-.+'
 env:
   global:
+	- MALLOC_ARENA_MAX=2
     - ADB_INSTALL_TIMEOUT=8
 before_install:
   - echo yes | android update sdk --filter platform-tools --no-ui --force > /dev/null
