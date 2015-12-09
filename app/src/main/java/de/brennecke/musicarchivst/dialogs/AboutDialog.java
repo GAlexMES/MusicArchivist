@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.gc.materialdesign.views.Button;
 
@@ -29,7 +28,6 @@ public class AboutDialog extends DialogFragment implements View.OnClickListener{
 
         ((Button)view.findViewById(R.id.cancleButton)).setOnClickListener(this);
 
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         getDialog().setTitle(R.string.dialog_about_title);
 
         return view;
