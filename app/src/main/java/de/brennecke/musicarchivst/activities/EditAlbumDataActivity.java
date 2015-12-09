@@ -1,5 +1,7 @@
 package de.brennecke.musicarchivst.activities;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,6 +24,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import de.brennecke.musicarchivst.R;
+import de.brennecke.musicarchivst.dialogs.SimpleDialog;
 import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.model.Exchange;
 import de.brennecke.musicarchivst.servicehandler.DownloadTask;
@@ -43,6 +46,8 @@ public class EditAlbumDataActivity extends AppCompatActivity {
 
     private boolean scannerShowed = false;
 
+    private boolean showExisting;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         album = new Album();
@@ -55,8 +60,8 @@ public class EditAlbumDataActivity extends AppCompatActivity {
             IntentIntegrator scanIntegrator = new IntentIntegrator(EditAlbumDataActivity.this);
             scanIntegrator.initiateScan();
         } else {
-            boolean showExisiting = getIntent().getBooleanExtra("SHOW_EXISTING", false);
-            if (showExisiting) {
+            showExisting = getIntent().getBooleanExtra("SHOW_EXISTING", false);
+            if (showExisting) {
                 album = Exchange.getInstance().getCurrentAlbum();
             }
         }
@@ -147,20 +152,37 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(EditAlbumDataActivity.this);
         sqLiteSourceAdapter.open();
         Album currentAlbum = getCurrentEnteredValues();
-        boolean alreadyExist = sqLiteSourceAdapter.existsAlbumInDB(currentAlbum);
-        if (!alreadyExist) {
-            sqLiteSourceAdapter.addAlbum(getCurrentEnteredValues());
+        if (!showExisting) {
+            boolean alreadyExist = sqLiteSourceAdapter.existsAlbumInDB(currentAlbum);
+            if (!alreadyExist) {
+                sqLiteSourceAdapter.addAlbum(getCurrentEnteredValues());
+                sqLiteSourceAdapter.close();
+                Log.i("save", "album saved");
+
+                CharSequence text = "Album saved!";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+                toast.show();
+
+                finish();
+            } else {
+                FragmentManager manager = getFragmentManager();
+                Fragment frag = manager.findFragmentByTag("fragment_edit_name");
+                if (frag != null) {
+                    manager.beginTransaction().remove(frag).commit();
+                }
+                SimpleDialog sd = new SimpleDialog();
+                sd.setActivity(this);
+                try {
+                    sd.setTitle(R.string.dialog_duplicated_album);
+                    sd.setText(R.string.dialog_duplicated_album_info);
+                    sd.show(manager, "fragment_edit_name");
+                } catch (Exception e) {
+                    Log.e("exception", e.getStackTrace().toString());
+                }
+            }
         }
-        sqLiteSourceAdapter.close();
-        Log.i("save", "album saved");
-
-        CharSequence text = "Album saved!";
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(getApplicationContext(), text, duration);
-        toast.show();
-
-        finish();
     }
 
     private Album getCurrentEnteredValues() {
