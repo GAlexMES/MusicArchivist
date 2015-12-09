@@ -62,6 +62,24 @@ public class SQLiteSourceAdapter {
         return newAlbum;
     }
 
+    public List<Album> getSearchResult(String query){
+        List<Album> retval = new ArrayList<>();
+        String condition = SQLiteHelper.COLUMN_TITLE + " LIKE '%" + query +"%'";
+
+        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
+                allColumns, condition, null,
+                null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            retval.add(cursorToAlbum(cursor));
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return retval;
+    }
+
     public List<Album> getAllArtists() {
         List<String> artistNames = new ArrayList<>();
         List<Album> artistList = new ArrayList<Album>();
