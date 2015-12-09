@@ -198,8 +198,8 @@ public class MainActivity extends AppCompatActivity {
             searchView.setSearchableInfo(info);
         }
 
-        searchView.setOnQueryTextListener(new SearchViewListener());
-        searchView.setOnCloseListener(new SearchViewListener());
+        searchView.setOnQueryTextListener(new SearchViewListener(this));
+        searchView.setOnCloseListener(new SearchViewListener(this));
     }
 
 }
