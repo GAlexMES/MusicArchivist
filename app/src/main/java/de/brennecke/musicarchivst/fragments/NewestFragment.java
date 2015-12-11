@@ -4,9 +4,7 @@ package de.brennecke.musicarchivst.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +17,6 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import de.brennecke.musicarchivst.R;
@@ -35,6 +31,7 @@ import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
  */
 public class NewestFragment extends Fragment {
 
+    private String MINE_TEST_DEVICE_ID = "55EB28184A0F147FB6A8E2FF0DCC64A9";
     private View view;
 
     @Override
@@ -49,37 +46,11 @@ public class NewestFragment extends Fragment {
 
     private void initAd(){
         AdView mAdView = (AdView) view.findViewById(R.id.adView);
-        String android_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
-        String deviceId = md5(android_id).toUpperCase();
-        Log.d("id",deviceId);
         AdRequest request = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice(deviceId)
+                .addTestDevice(MINE_TEST_DEVICE_ID)
                 .build();
         mAdView.loadAd(request);
-    }
-
-    public static final String md5(final String s) {
-        try {
-            // Create MD5 Hash
-            MessageDigest digest = java.security.MessageDigest
-                    .getInstance("MD5");
-            digest.update(s.getBytes());
-            byte messageDigest[] = digest.digest();
-
-            // Create Hex String
-            StringBuffer hexString = new StringBuffer();
-            for (int i = 0; i < messageDigest.length; i++) {
-                String h = Integer.toHexString(0xFF & messageDigest[i]);
-                while (h.length() < 2)
-                    h = "0" + h;
-                hexString.append(h);
-            }
-            return hexString.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-        }
-        return "";
     }
 
     private void initFABButtons() {
