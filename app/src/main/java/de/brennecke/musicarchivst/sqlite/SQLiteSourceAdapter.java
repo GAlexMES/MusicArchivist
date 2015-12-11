@@ -41,11 +41,23 @@ public class SQLiteSourceAdapter {
         values.put(SQLiteHelper.COLUMN_ARTIST, album.getArtist());
         values.put(SQLiteHelper.COLUMN_TITLE, album.getTitle());
         values.put(SQLiteHelper.COLUMN_GENRE, album.getGenre());
-        values.put(SQLiteHelper.COLUMN_COVERURL, album.getAlbumCoverURL());
-        values.put(SQLiteHelper.COLUMN_BITMAP, bitmapToBlob(album.getCoverBitmap()));
+
+        String albumURL = String.valueOf(getDefault(album.getAlbumCoverURL(), ""));
+        values.put(SQLiteHelper.COLUMN_COVERURL, albumURL);
+
+        byte[] bitmap = bitmapToBlob(album.getCoverBitmap());
+        values.put(SQLiteHelper.COLUMN_BITMAP, (byte[]) getDefault(bitmap, new byte[1]));
+
         values.put(SQLiteHelper.COLUMN_DISCOGS_ID, album.getID());
 
         long insertId = database.insert(SQLiteHelper.TABLE_ALBUM, null, values);
+    }
+
+    private Object getDefault(Object value, Object defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        return value;
     }
 
     public Album getAlbum(String artist, String title) {
@@ -62,9 +74,9 @@ public class SQLiteSourceAdapter {
         return newAlbum;
     }
 
-    public List<Album> getSearchResult(String query){
+    public List<Album> getSearchResult(String query) {
         List<Album> retval = new ArrayList<>();
-        String condition = SQLiteHelper.COLUMN_TITLE + " LIKE '%" + query +"%'";
+        String condition = SQLiteHelper.COLUMN_TITLE + " LIKE '%" + query + "%'";
 
         Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
                 allColumns, condition, null,
@@ -99,10 +111,10 @@ public class SQLiteSourceAdapter {
         return artistList;
     }
 
-    public List<Album> getAlbums(String artistName){
+    public List<Album> getAlbums(String artistName) {
         List<Album> albumList = new ArrayList<Album>();
 
-        String condition = SQLiteHelper.COLUMN_ARTIST + "='" + artistName+"'";
+        String condition = SQLiteHelper.COLUMN_ARTIST + "='" + artistName + "'";
         Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
                 allColumns, condition, null,
                 null, null, null);
@@ -134,11 +146,11 @@ public class SQLiteSourceAdapter {
 
     public boolean existsAlbumInDB(Album currentAlbum) {
 
-        String condition = SQLiteHelper.COLUMN_ARTIST + "='" + currentAlbum.getArtist()+"' AND "+ SQLiteHelper.COLUMN_TITLE+"='"+currentAlbum.getTitle()+"'";
+        String condition = SQLiteHelper.COLUMN_ARTIST + "='" + currentAlbum.getArtist() + "' AND " + SQLiteHelper.COLUMN_TITLE + "='" + currentAlbum.getTitle() + "'";
         Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
                 allColumns, condition, null,
                 null, null, null);
-        return cursor.getCount() == 0 ?false:true;
+        return cursor.getCount() == 0 ? false : true;
     }
 
     private Album cursorToAlbum(Cursor cursor) {
@@ -164,8 +176,12 @@ public class SQLiteSourceAdapter {
     }
 
     private byte[] bitmapToBlob(Bitmap bm) {
-        ByteArrayOutputStream bufferStream = new ByteArrayOutputStream(16 * 1024);
-        bm.compress(Bitmap.CompressFormat.JPEG, 80, bufferStream);
-        return bufferStream.toByteArray();
+        try {
+            ByteArrayOutputStream bufferStream = new ByteArrayOutputStream(16 * 1024);
+            bm.compress(Bitmap.CompressFormat.JPEG, 80, bufferStream);
+            return bufferStream.toByteArray();
+        } catch (NullPointerException npee) {
+            return null;
+        }
     }
 }

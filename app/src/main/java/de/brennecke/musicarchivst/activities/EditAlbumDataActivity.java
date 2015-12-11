@@ -40,7 +40,6 @@ public class EditAlbumDataActivity extends AppCompatActivity {
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Album album;
 
-    private boolean scannerShowed = false;
     private boolean showExisting;
 
     @Override
@@ -59,7 +58,40 @@ public class EditAlbumDataActivity extends AppCompatActivity {
                 album = Exchange.getInstance().getCurrentAlbum();
             }
         }
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_edit_album, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                saveAlbumToDatabase();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        Log.i(TAG, "back to activity. request code:" + String.valueOf(requestCode));
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                String contents = intent.getStringExtra("SCAN_RESULT");
+                String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
+                showResult(contents);
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "No scan data received!", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
     }
 
     private void initUI() {
@@ -81,7 +113,6 @@ public class EditAlbumDataActivity extends AppCompatActivity {
                 }
             });
         }
-
         updateUI();
     }
 
@@ -102,10 +133,12 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         mProgressDialog.setCancelable(true);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_edit_album, menu);
-        return true;
+    private void updateUI() {
+        collapsingToolbarLayout.setTitle(album.getArtist() + "-" + album.getTitle());
+        artistTxt.setText(album.getArtist());
+        albumTxt.setText(album.getTitle());
+        genreTxt.setText(album.getGenre());
+        albumCoverImage.setImageBitmap(album.getCoverBitmap());
     }
 
     private void addInputMethod(EditText editText) {
@@ -129,34 +162,33 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_save:
-                saveAlbumToDatabase();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void saveAlbumToDatabase() {
-        Log.i("save", "saveAlbum");
+    private boolean saveAlbumToDatabase() {
+        Log.i(TAG, "saveAlbum");
 
         SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(EditAlbumDataActivity.this);
         sqLiteSourceAdapter.open();
         Album currentAlbum = getCurrentEnteredValues();
+
+        boolean enoughInputs = checkAlbum(currentAlbum);
+
+
+
+        if(!enoughInputs){
+            Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.not_enough_values), Toast.LENGTH_SHORT);
+            toast.show();
+            return false;
+        }
+
         if (!showExisting) {
             boolean alreadyExist = sqLiteSourceAdapter.existsAlbumInDB(currentAlbum);
             if (!alreadyExist) {
-                sqLiteSourceAdapter.addAlbum(getCurrentEnteredValues());
+                sqLiteSourceAdapter.addAlbum(currentAlbum);
                 sqLiteSourceAdapter.close();
-                Log.i("save", "album saved");
+                Log.i(TAG, "album saved");
 
                 CharSequence text = "Album saved!";
-                int duration = Toast.LENGTH_SHORT;
 
-                Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+                Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
                 toast.show();
 
                 finish();
@@ -173,59 +205,31 @@ public class EditAlbumDataActivity extends AppCompatActivity {
                     sd.setText(R.string.dialog_duplicated_album_info);
                     sd.show(manager, "fragment_edit_name");
                 } catch (Exception e) {
-                    Log.e("exception", e.getStackTrace().toString());
+                    Log.e(TAG, e.getStackTrace().toString());
                 }
             }
         }
+        return true;
     }
 
     private Album getCurrentEnteredValues() {
         Album retval = new Album();
-        retval.setAlbumCoverURL(album.getAlbumCoverURL());
-        retval.setCoverBitmap(album.getCoverBitmap());
         retval.setArtist(artistTxt.getText().toString());
         retval.setGenre(genreTxt.getText().toString());
         retval.setTitle(albumTxt.getText().toString());
+        retval.setAlbumCoverURL(album.getAlbumCoverURL());
+        retval.setCoverBitmap(album.getCoverBitmap());
         return retval;
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        Log.i("backToActivity", String.valueOf(requestCode));
-        //IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (requestCode == 0) {
-            if (resultCode == RESULT_OK) {
-                String contents = intent.getStringExtra("SCAN_RESULT");
-                String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
-                showResult(contents);
-                // Handle successful scan
-            } else if (resultCode == RESULT_CANCELED) {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "No scan data received!", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        }
-        /*
-        if (scanningResult != null) {
-            String barcode = scanningResult.getContents();
-            showResult(barcode);
-        } else {
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "No scan data received!", Toast.LENGTH_SHORT);
-            toast.show();
-        }
-         */
-    }
-
-    private void updateUI() {
-        collapsingToolbarLayout.setTitle(album.getArtist() + "-" + album.getTitle());
-        artistTxt.setText(album.getArtist());
-        albumTxt.setText(album.getTitle());
-        genreTxt.setText(album.getGenre());
-        albumCoverImage.setImageBitmap(album.getCoverBitmap());
+    private boolean checkAlbum(Album album){
+        boolean titleAccepted = album.getTitle() != null && !album.getTitle().equals("");
+        boolean artistAccepted = album.getArtist() != null && !album.getArtist().equals("");
+        return titleAccepted && artistAccepted;
     }
 
     private void showResult(String barcode) {
-        Log.d("discogs", "search for: " + barcode);
+        Log.d(TAG, "discogs search for: " + barcode);
 
         final DownloadTask downloadTask = new DownloadTask(EditAlbumDataActivity.this, mProgressDialog, this);
         downloadTask.execute(barcode);

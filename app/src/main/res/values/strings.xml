@@ -19,6 +19,8 @@
         <item>ITF</item>
     </string-array>
 
+    <string name="not_enough_values">Please enter at least a artist and a title.</string>
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
