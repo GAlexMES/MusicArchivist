@@ -20,9 +20,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
 import de.brennecke.musicarchivst.R;
 import de.brennecke.musicarchivst.dialogs.SimpleDialog;
 import de.brennecke.musicarchivst.model.Album;
@@ -36,16 +33,14 @@ import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
 public class EditAlbumDataActivity extends AppCompatActivity {
     private EditText artistTxt, albumTxt, genreTxt;
 
+    private static final String TAG = EditAlbumDataActivity.class.getSimpleName();
+
     private ProgressDialog mProgressDialog;
-
     private ImageView albumCoverImage;
-
     private CollapsingToolbarLayout collapsingToolbarLayout;
-
     private Album album;
 
     private boolean scannerShowed = false;
-
     private boolean showExisting;
 
     @Override
@@ -53,19 +48,18 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         album = new Album();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_edit_album);
+        initUI();
+        String barcode = getIntent().getStringExtra("BARCODE");
+        if (barcode != null) {
+            showResult(barcode);
 
-        boolean showScanner = getIntent().getBooleanExtra("SHOW_SCANNER", false);
-        if (showScanner && !scannerShowed) {
-            scannerShowed = true;
-            IntentIntegrator scanIntegrator = new IntentIntegrator(EditAlbumDataActivity.this);
-            scanIntegrator.initiateScan();
         } else {
             showExisting = getIntent().getBooleanExtra("SHOW_EXISTING", false);
             if (showExisting) {
                 album = Exchange.getInstance().getCurrentAlbum();
             }
         }
-        initUI();
+
     }
 
     private void initUI() {
@@ -197,7 +191,20 @@ public class EditAlbumDataActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         Log.i("backToActivity", String.valueOf(requestCode));
-        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        //IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                String contents = intent.getStringExtra("SCAN_RESULT");
+                String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
+                showResult(contents);
+                // Handle successful scan
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "No scan data received!", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+        /*
         if (scanningResult != null) {
             String barcode = scanningResult.getContents();
             showResult(barcode);
@@ -206,6 +213,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
                     "No scan data received!", Toast.LENGTH_SHORT);
             toast.show();
         }
+         */
     }
 
     private void updateUI() {

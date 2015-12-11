@@ -3,6 +3,7 @@ package de.brennecke.musicarchivst.activities;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -200,6 +202,21 @@ public class MainActivity extends AppCompatActivity {
 
         searchView.setOnQueryTextListener(new SearchViewListener(this));
         searchView.setOnCloseListener(new SearchViewListener(this));
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                String contents = intent.getStringExtra("SCAN_RESULT");
+                Intent intentMain = new Intent(this, EditAlbumDataActivity.class);
+                intentMain.putExtra("BARCODE", contents);
+                startActivity(intentMain);
+            }
+            else{
+                Toast toast = Toast.makeText(this, "Could not scan correctly!", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        }
     }
 
 }

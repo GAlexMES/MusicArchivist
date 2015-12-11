@@ -28,6 +28,12 @@
     <string name="dialog_duplicated_album">Duplicated Album</string>
     <string name="dialog_duplicated_album_info">A album with the same artist and name is already stored in the database. Unfortunately we can\'t save it twice in the current verion of this application. Please change the name of the album or the artist, or delete the already saved album.</string>
 
+    <string name="download_barcode_title">No valid barcode scanner found</string>
+    <string name="download_barcode_message">To use that feature you need a valid barcode scanner app. Do you want to download it now?</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <string name="banner_ad_unit_id">ca-app-pub-2103522506634370/5386448044</string>
 
 </resources>
