@@ -5,6 +5,9 @@ import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -16,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -27,6 +31,7 @@ import de.brennecke.musicarchivst.dialogs.AboutDialog;
 import de.brennecke.musicarchivst.fragments.AlbumListFragment;
 import de.brennecke.musicarchivst.fragments.ArtistFragment;
 import de.brennecke.musicarchivst.fragments.NewestFragment;
+import de.brennecke.musicarchivst.fragments.SettingsFragment;
 import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
 
@@ -96,6 +101,12 @@ public class MainActivity extends AppCompatActivity {
         return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
     }
 
+    public void setImageToNavigationDrawer(Bitmap bdm){
+        LinearLayout header = (LinearLayout)navigationDrawer.findViewById(R.id.navigation_drawer_header);
+        Drawable backgroundImage = new BitmapDrawable(bdm);
+        header.setBackground(backgroundImage);
+    }
+
     private void initNavigationDrawer(Context context) {
         drawerLayout = (DrawerLayout) findViewById(R.id.main_layout);
         navigationDrawer = (NavigationView) findViewById(R.id.navigationView);
@@ -130,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 showAlbumList();
                 break;
             case R.id.nav_settings:
-                fragmentClass = NewestFragment.class;
+                fragmentClass = SettingsFragment.class;
                 break;
             case R.id.nav_about:
                 showAboutDialog();
@@ -164,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
         }
         AboutDialog aboutDialog = new AboutDialog();
         aboutDialog.show(manager, "fragment_about_name");
-
     }
 
     public void setFragment(Class fragmentClass) {
