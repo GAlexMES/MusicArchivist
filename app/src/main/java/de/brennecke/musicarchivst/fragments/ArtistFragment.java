@@ -1,11 +1,13 @@
 package de.brennecke.musicarchivst.fragments;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +21,9 @@ import de.brennecke.musicarchivst.view.AlphabeticList;
 /**
  * Created by Alexander on 10.11.2015.
  */
-public class ArtistFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class ArtistFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+
+    private static final String TAG = ArtistFragment.class.getSimpleName();
 
     private AlphabeticList alphabeticList;
     private View view;
@@ -32,7 +36,7 @@ public class ArtistFragment extends Fragment implements AdapterView.OnItemClickL
                              Bundle savedInstanceState) {
         getListFromDB();
 
-        alphabeticList = new AlphabeticList(artistNames,this);
+        alphabeticList = new AlphabeticList(artistNames,this,this);
         view = alphabeticList.createView(inflater, container, getActivity());
         return view;
     }
@@ -77,5 +81,12 @@ public class ArtistFragment extends Fragment implements AdapterView.OnItemClickL
         ((AlbumListFragment)albumFragment).setAlbums(artistAlbums);
 
         ((MainActivity) getActivity()).showFragment(albumFragment);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        String selectedAlbum = ((TextView)view).getText().toString();
+        Log.d(TAG, selectedAlbum);
+        return true;
     }
 }

@@ -19,14 +19,30 @@
         <item>ITF</item>
     </string-array>
 
+    <string name="not_enough_values">Please enter at least a artist and a title.</string>
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
+    <string name="settings_favorite_album">Favorite album</string>
+
     <string name="dialog_about_title">About</string>
-    <string name="dialog_about_text">This Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHub. This Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHubThis Application was developed by Alexander Brennecke. The sourcecode is availabel under GitHub Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem Ipsum</string>
+    <string name="dialog_about_text">This Application was developed by Alexander Brennecke.\n
+        The sourcecode is availabel under GitHub.\n
+        Big thank to the developers of the used libraries! \n</string>
+
+    <string name="github_link"><a href="http://github.com/GAlexMES/MusicArchivist">The code can be found on GitHub!</a></string>
+    <string name="license_link"><a href="http://github.com/GAlexMES/MusicArchivist/blob/master/LICENSE">The License can be found here!</a></string>
+    <string name="readme_link"><a href="http://github.com/GAlexMES/MusicArchivist/blob/master/README.md">A list of the used libraries and their licenses!</a></string>
 
     <string name="dialog_duplicated_album">Duplicated Album</string>
     <string name="dialog_duplicated_album_info">A album with the same artist and name is already stored in the database. Unfortunately we can\'t save it twice in the current verion of this application. Please change the name of the album or the artist, or delete the already saved album.</string>
+
+    <string name="download_barcode_title">No valid barcode scanner found</string>
+    <string name="download_barcode_message">To use that feature you need a valid barcode scanner app. Do you want to download it now?</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <string name="banner_ad_unit_id">ca-app-pub-2103522506634370/5386448044</string>
 

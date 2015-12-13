@@ -17,12 +17,15 @@ import java.util.Map;
 import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.model.Exchange;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
+import de.brennecke.musicarchivst.view.AlbumPopupMenu;
 import de.brennecke.musicarchivst.view.AlphabeticList;
 
 /**
  * Created by Alexander on 05.12.2015.
  */
-public class AlbumListFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class AlbumListFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+
+    private static final String TAG = AlbumListFragment.class.getSimpleName();
 
     private String artistName;
     private AlphabeticList alphabeticList;
@@ -32,7 +35,7 @@ public class AlbumListFragment extends Fragment implements AdapterView.OnItemCli
     private View view;
     private List<Album> albumList;
 
-    public AlbumListFragment(){
+    public AlbumListFragment() {
         albumList = new ArrayList<>();
         albumMap = new HashMap<>();
     }
@@ -40,11 +43,11 @@ public class AlbumListFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (albumList.size()==0) {
+        if (albumList.size() == 0) {
             albumList = getAlbumsFromDB();
         }
         sortedAlbums = sortList();
-        alphabeticList = new AlphabeticList(sortedAlbums, this);
+        alphabeticList = new AlphabeticList(sortedAlbums, this, this);
         view = alphabeticList.createView(inflater, container, getActivity());
         return view;
     }
@@ -83,5 +86,13 @@ public class AlbumListFragment extends Fragment implements AdapterView.OnItemCli
         Exchange.getInstance().setCurrentAlbum(selected);
         Intent intentMain = new Intent(getActivity(), ShowAlbumActivity.class);
         getActivity().startActivity(intentMain);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Album selected = albumMap.get(sortedAlbums[position]);
+        AlbumPopupMenu apm = new AlbumPopupMenu(selected,view,getActivity());
+        apm.showMenu();
+        return true;
     }
 }
