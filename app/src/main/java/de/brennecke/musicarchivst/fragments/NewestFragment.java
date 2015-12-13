@@ -3,6 +3,7 @@ package de.brennecke.musicarchivst.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -29,18 +30,22 @@ import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
 /**
  * Created by Alexander on 09.11.2015.
  */
-public class NewestFragment extends Fragment {
+public class NewestFragment extends Fragment implements View.OnLayoutChangeListener {
 
     private String MINE_TEST_DEVICE_ID = "55EB28184A0F147FB6A8E2FF0DCC64A9";
     private View view;
+
+    private boolean replacedNavDrawerHeader = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_newest_additions, container, false);
+        view.addOnLayoutChangeListener(this);
         initFABButtons();
         initAd();
         initCards();
+
         return view;
     }
 
@@ -97,6 +102,16 @@ public class NewestFragment extends Fragment {
         AlbumCardListener acl =  new AlbumCardListener(album);
         v.setOnClickListener(acl);
         return v;
+    }
+
+    @Override
+    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        if(!replacedNavDrawerHeader){
+            SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(getActivity());
+            sqLiteSourceAdapter.open();
+            Bitmap bm = sqLiteSourceAdapter.getFavoriteAlbumCover();
+            replacedNavDrawerHeader = ((MainActivity)getActivity()).setImageToNavigationDrawer(bm);
+        }
     }
 
     private class AlbumCardListener implements View.OnClickListener{

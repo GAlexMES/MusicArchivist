@@ -5,6 +5,9 @@ import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -16,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -27,6 +31,7 @@ import de.brennecke.musicarchivst.dialogs.AboutDialog;
 import de.brennecke.musicarchivst.fragments.AlbumListFragment;
 import de.brennecke.musicarchivst.fragments.ArtistFragment;
 import de.brennecke.musicarchivst.fragments.NewestFragment;
+import de.brennecke.musicarchivst.fragments.SettingsFragment;
 import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
 
@@ -53,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -68,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_settings:
+                Class fragmentClass = SettingsFragment.class;
+                setFragment(fragmentClass);
                 return true;
         }
 
@@ -79,13 +92,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        drawerToggle.syncState();
-    }
-
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         drawerToggle.onConfigurationChanged(newConfig);
@@ -94,6 +100,21 @@ public class MainActivity extends AppCompatActivity {
 
     private ActionBarDrawerToggle setupDrawerToggle() {
         return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
+    }
+
+    public boolean setImageToNavigationDrawer(Bitmap bdm) {
+        LinearLayout header = (LinearLayout) findViewById(R.id.navigation_drawer_header);
+        if (header != null) {
+            if (bdm != null) {
+                Drawable backgroundImage = new BitmapDrawable(bdm);
+                header.setBackground(backgroundImage);
+            } else {
+                header.setBackgroundResource(0);
+                header.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            }
+            return true;
+        }
+        return false;
     }
 
     private void initNavigationDrawer(Context context) {
@@ -130,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 showAlbumList();
                 break;
             case R.id.nav_settings:
-                fragmentClass = NewestFragment.class;
+                fragmentClass = SettingsFragment.class;
                 break;
             case R.id.nav_about:
                 showAboutDialog();
@@ -152,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         sqLiteSourceAdapter.open();
         List<Album> albumList = sqLiteSourceAdapter.getAllAlbums();
         Fragment albumFragment = new AlbumListFragment();
-        ((AlbumListFragment)albumFragment).setAlbums(albumList);
+        ((AlbumListFragment) albumFragment).setAlbums(albumList);
         showFragment(albumFragment);
     }
 
@@ -164,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
         }
         AboutDialog aboutDialog = new AboutDialog();
         aboutDialog.show(manager, "fragment_about_name");
-
     }
 
     public void setFragment(Class fragmentClass) {
@@ -211,8 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intentMain = new Intent(this, EditAlbumDataActivity.class);
                 intentMain.putExtra("BARCODE", contents);
                 startActivity(intentMain);
-            }
-            else{
+            } else {
                 Toast toast = Toast.makeText(this, "Could not scan correctly!", Toast.LENGTH_LONG);
                 toast.show();
             }

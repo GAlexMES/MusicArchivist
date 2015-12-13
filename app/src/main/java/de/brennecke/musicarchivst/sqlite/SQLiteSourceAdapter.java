@@ -3,6 +3,7 @@ package de.brennecke.musicarchivst.sqlite;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -21,8 +22,6 @@ public class SQLiteSourceAdapter {
 
     private SQLiteDatabase database;
     private SQLiteHelper dbHelper;
-    private String[] allColumns = {SQLiteHelper.COLUMN_ID,
-            SQLiteHelper.COLUMN_TITLE, SQLiteHelper.COLUMN_ARTIST, SQLiteHelper.COLUMN_BITMAP, SQLiteHelper.COLUMN_COVERURL, SQLiteHelper.COLUMN_GENRE, SQLiteHelper.COLUMN_DISCOGS_ID};
 
     public SQLiteSourceAdapter(Context context) {
         dbHelper = new SQLiteHelper(context);
@@ -38,19 +37,19 @@ public class SQLiteSourceAdapter {
 
     public void addAlbum(Album album) {
         ContentValues values = new ContentValues();
-        values.put(SQLiteHelper.COLUMN_ARTIST, album.getArtist());
-        values.put(SQLiteHelper.COLUMN_TITLE, album.getTitle());
-        values.put(SQLiteHelper.COLUMN_GENRE, album.getGenre());
+        values.put(Queries.COLUMN_ARTIST, album.getArtist());
+        values.put(Queries.COLUMN_TITLE, album.getTitle());
+        values.put(Queries.COLUMN_GENRE, album.getGenre());
 
         String albumURL = String.valueOf(getDefault(album.getAlbumCoverURL(), ""));
-        values.put(SQLiteHelper.COLUMN_COVERURL, albumURL);
+        values.put(Queries.COLUMN_COVERURL, albumURL);
 
         byte[] bitmap = bitmapToBlob(album.getCoverBitmap());
-        values.put(SQLiteHelper.COLUMN_BITMAP, (byte[]) getDefault(bitmap, new byte[1]));
+        values.put(Queries.COLUMN_BITMAP, (byte[]) getDefault(bitmap, new byte[1]));
 
-        values.put(SQLiteHelper.COLUMN_DISCOGS_ID, album.getID());
+        values.put(Queries.COLUMN_DISCOGS_ID, album.getID());
 
-        long insertId = database.insert(SQLiteHelper.TABLE_ALBUM, null, values);
+        long insertId = database.insert(Queries.TABLE_ALBUM, null, values);
     }
 
     private Object getDefault(Object value, Object defaultValue) {
@@ -61,11 +60,11 @@ public class SQLiteSourceAdapter {
     }
 
     public Album getAlbum(String artist, String title) {
-        String condition = SQLiteHelper.COLUMN_ARTIST + "=" + artist + " AND "
-                + SQLiteHelper.COLUMN_TITLE + "=" + title;
+        String condition = Queries.COLUMN_ARTIST + "=" + artist + " AND "
+                + Queries.COLUMN_TITLE + "=" + title;
 
-        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
-                allColumns, condition, null,
+        Cursor cursor = database.query(Queries.TABLE_ALBUM,
+                Queries.TABLE_ALBUM_COLUMNS, condition, null,
                 null, null, null);
 
         cursor.moveToFirst();
@@ -76,10 +75,10 @@ public class SQLiteSourceAdapter {
 
     public List<Album> getSearchResult(String query) {
         List<Album> retval = new ArrayList<>();
-        String condition = SQLiteHelper.COLUMN_TITLE + " LIKE '%" + query + "%'";
+        String condition = Queries.COLUMN_TITLE + " LIKE '%" + query + "%'";
 
-        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
-                allColumns, condition, null,
+        Cursor cursor = database.query(Queries.TABLE_ALBUM,
+                Queries.TABLE_ALBUM_COLUMNS, condition, null,
                 null, null, null);
 
         cursor.moveToFirst();
@@ -95,7 +94,7 @@ public class SQLiteSourceAdapter {
     public List<Album> getAllArtists() {
         List<String> artistNames = new ArrayList<>();
         List<Album> artistList = new ArrayList<Album>();
-        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM, allColumns, "", null, null, null, null);
+        Cursor cursor = database.query(Queries.TABLE_ALBUM,  Queries.TABLE_ALBUM_COLUMNS, "", null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -114,9 +113,9 @@ public class SQLiteSourceAdapter {
     public List<Album> getAlbums(String artistName) {
         List<Album> albumList = new ArrayList<Album>();
 
-        String condition = SQLiteHelper.COLUMN_ARTIST + "='" + artistName + "'";
-        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
-                allColumns, condition, null,
+        String condition = Queries.COLUMN_ARTIST + "='" + artistName + "'";
+        Cursor cursor = database.query(Queries.TABLE_ALBUM,
+                Queries.TABLE_ALBUM_COLUMNS, condition, null,
                 null, null, null);
 
         cursor.moveToFirst();
@@ -132,7 +131,7 @@ public class SQLiteSourceAdapter {
     public List<Album> getAllAlbums() {
         List<Album> albumList = new ArrayList<Album>();
 
-        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM, allColumns, "", null, null, null, null);
+        Cursor cursor = database.query(Queries.TABLE_ALBUM,  Queries.TABLE_ALBUM_COLUMNS, "", null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -145,25 +144,58 @@ public class SQLiteSourceAdapter {
     }
 
     public boolean existsAlbumInDB(Album currentAlbum) {
-
-        String condition = SQLiteHelper.COLUMN_ARTIST + "='" + currentAlbum.getArtist() + "' AND " + SQLiteHelper.COLUMN_TITLE + "='" + currentAlbum.getTitle() + "'";
-        Cursor cursor = database.query(SQLiteHelper.TABLE_ALBUM,
-                allColumns, condition, null,
+        String condition = Queries.COLUMN_ARTIST + "='" + currentAlbum.getArtist() + "' AND " + Queries.COLUMN_TITLE + "='" + currentAlbum.getTitle() + "'";
+        Cursor cursor = database.query(Queries.TABLE_ALBUM,
+                Queries.TABLE_ALBUM_COLUMNS, condition, null,
                 null, null, null);
         return cursor.getCount() == 0 ? false : true;
     }
 
+    public void setFavoriteAlbum(Album album){
+        ContentValues removeAllFavorites = new ContentValues();
+        removeAllFavorites.put(Queries.COLUMN_FAVORITE_ALBUM, 0);
+        String condition ="";
+        database.update(Queries.TABLE_ALBUM, removeAllFavorites, null, null);
+
+        ContentValues setFavorite = new ContentValues();
+        setFavorite.put(Queries.COLUMN_FAVORITE_ALBUM, 1);
+        condition = Queries.COLUMN_ID +"="+ album.getID();
+        database.update(Queries.TABLE_ALBUM, setFavorite, condition, null);
+    }
+
+    public void deleteAlbum(Album album){
+        String condition = Queries.COLUMN_ID +"="+album.getID();
+        database.delete(Queries.TABLE_ALBUM,condition,null);
+    }
+
+    public Bitmap getFavoriteAlbumCover(){
+        String condition = Queries.COLUMN_FAVORITE_ALBUM +"=1";
+
+        String[] coloums = {Queries.COLUMN_FAVORITE_ALBUM,Queries.COLUMN_BITMAP};
+        Cursor cursor = database.query(Queries.TABLE_ALBUM,
+                coloums, condition, null,
+                null, null, null);
+
+        cursor.moveToFirst();
+        try {
+            byte[] bitmapBlob = cursor.getBlob(cursor.getColumnIndex(Queries.COLUMN_BITMAP));
+            return blobToBitmap(bitmapBlob);
+        }catch (CursorIndexOutOfBoundsException|NullPointerException npee){
+            return null;
+        }
+    }
+
     private Album cursorToAlbum(Cursor cursor) {
         Album album = new Album();
-        album.setID(cursor.getLong(cursor.getColumnIndex(SQLiteHelper.COLUMN_ID)));
-        album.setTitle(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_TITLE)));
-        album.setArtist(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_ARTIST)));
-        album.setAlbumCoverURL(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_COVERURL)));
+        album.setID(cursor.getLong(cursor.getColumnIndex(Queries.COLUMN_ID)));
+        album.setTitle(cursor.getString(cursor.getColumnIndex(Queries.COLUMN_TITLE)));
+        album.setArtist(cursor.getString(cursor.getColumnIndex(Queries.COLUMN_ARTIST)));
+        album.setAlbumCoverURL(cursor.getString(cursor.getColumnIndex(Queries.COLUMN_COVERURL)));
 
-        byte[] bitmapBlob = cursor.getBlob(cursor.getColumnIndex(SQLiteHelper.COLUMN_BITMAP));
+        byte[] bitmapBlob = cursor.getBlob(cursor.getColumnIndex(Queries.COLUMN_BITMAP));
         album.setCoverBitmap(blobToBitmap(bitmapBlob));
 
-        album.setGenre(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_GENRE)));
+        album.setGenre(cursor.getString(cursor.getColumnIndex(Queries.COLUMN_GENRE)));
         return album;
     }
 
