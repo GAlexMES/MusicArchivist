@@ -21,7 +21,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(Queries.DATABASE_CREATE);
-        //database.execSQL(Queries.ADD_FAVORITE_ALBUM);
+        database.execSQL(Queries.ADD_FAVORITE_ALBUM);
     }
 
     @Override
@@ -32,8 +32,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             case 2:
 
         }
-        Log.d(TAG, "Upgrading database from version " + oldVersion + " to "
-                        + newVersion + ".");
+        Log.d(TAG, "Upgrading database from version " + oldVersion + " to "+ newVersion + ".");
     }
 
 }

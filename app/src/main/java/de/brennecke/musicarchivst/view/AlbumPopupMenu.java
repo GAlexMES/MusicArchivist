@@ -7,7 +7,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import de.brennecke.musicarchivst.R;
+import de.brennecke.musicarchivst.activities.MainActivity;
 import de.brennecke.musicarchivst.model.Album;
+import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
 
 /**
  * Created by Alexander on 12.12.2015.
@@ -45,10 +47,17 @@ public class AlbumPopupMenu {
     }
 
     private void deleteAlbum(){
+        SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(activity);
+        sqLiteSourceAdapter.open();
+        sqLiteSourceAdapter.deleteAlbum(album);
         Log.d(TAG, album.getTitle() + " shouled be deleted");
     }
 
     private void markAsFavorite(){
         Log.d(TAG, album.getTitle() + " should be marked as favorite");
+        SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(activity);
+        sqLiteSourceAdapter.open();
+        sqLiteSourceAdapter.setFavoriteAlbum(album);
+        ((MainActivity)activity).setImageToNavigationDrawer(album.getCoverBitmap());
     }
 }

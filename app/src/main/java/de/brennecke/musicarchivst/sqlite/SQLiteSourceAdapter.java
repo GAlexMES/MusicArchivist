@@ -3,6 +3,7 @@ package de.brennecke.musicarchivst.sqlite;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -21,8 +22,6 @@ public class SQLiteSourceAdapter {
 
     private SQLiteDatabase database;
     private SQLiteHelper dbHelper;
-    private String[] allColumns = {Queries.COLUMN_ID,
-            Queries.COLUMN_TITLE, Queries.COLUMN_ARTIST, Queries.COLUMN_BITMAP, Queries.COLUMN_COVERURL, Queries.COLUMN_GENRE, Queries.COLUMN_DISCOGS_ID};
 
     public SQLiteSourceAdapter(Context context) {
         dbHelper = new SQLiteHelper(context);
@@ -65,7 +64,7 @@ public class SQLiteSourceAdapter {
                 + Queries.COLUMN_TITLE + "=" + title;
 
         Cursor cursor = database.query(Queries.TABLE_ALBUM,
-                allColumns, condition, null,
+                Queries.TABLE_ALBUM_COLUMNS, condition, null,
                 null, null, null);
 
         cursor.moveToFirst();
@@ -79,7 +78,7 @@ public class SQLiteSourceAdapter {
         String condition = Queries.COLUMN_TITLE + " LIKE '%" + query + "%'";
 
         Cursor cursor = database.query(Queries.TABLE_ALBUM,
-                allColumns, condition, null,
+                Queries.TABLE_ALBUM_COLUMNS, condition, null,
                 null, null, null);
 
         cursor.moveToFirst();
@@ -95,7 +94,7 @@ public class SQLiteSourceAdapter {
     public List<Album> getAllArtists() {
         List<String> artistNames = new ArrayList<>();
         List<Album> artistList = new ArrayList<Album>();
-        Cursor cursor = database.query(Queries.TABLE_ALBUM, allColumns, "", null, null, null, null);
+        Cursor cursor = database.query(Queries.TABLE_ALBUM,  Queries.TABLE_ALBUM_COLUMNS, "", null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -116,7 +115,7 @@ public class SQLiteSourceAdapter {
 
         String condition = Queries.COLUMN_ARTIST + "='" + artistName + "'";
         Cursor cursor = database.query(Queries.TABLE_ALBUM,
-                allColumns, condition, null,
+                Queries.TABLE_ALBUM_COLUMNS, condition, null,
                 null, null, null);
 
         cursor.moveToFirst();
@@ -132,7 +131,7 @@ public class SQLiteSourceAdapter {
     public List<Album> getAllAlbums() {
         List<Album> albumList = new ArrayList<Album>();
 
-        Cursor cursor = database.query(Queries.TABLE_ALBUM, allColumns, "", null, null, null, null);
+        Cursor cursor = database.query(Queries.TABLE_ALBUM,  Queries.TABLE_ALBUM_COLUMNS, "", null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -145,12 +144,45 @@ public class SQLiteSourceAdapter {
     }
 
     public boolean existsAlbumInDB(Album currentAlbum) {
-
         String condition = Queries.COLUMN_ARTIST + "='" + currentAlbum.getArtist() + "' AND " + Queries.COLUMN_TITLE + "='" + currentAlbum.getTitle() + "'";
         Cursor cursor = database.query(Queries.TABLE_ALBUM,
-                allColumns, condition, null,
+                Queries.TABLE_ALBUM_COLUMNS, condition, null,
                 null, null, null);
         return cursor.getCount() == 0 ? false : true;
+    }
+
+    public void setFavoriteAlbum(Album album){
+        ContentValues removeAllFavorites = new ContentValues();
+        removeAllFavorites.put(Queries.COLUMN_FAVORITE_ALBUM, 0);
+        String condition ="";
+        database.update(Queries.TABLE_ALBUM, removeAllFavorites, null, null);
+
+        ContentValues setFavorite = new ContentValues();
+        setFavorite.put(Queries.COLUMN_FAVORITE_ALBUM, 1);
+        condition = Queries.COLUMN_ID +"="+ album.getID();
+        database.update(Queries.TABLE_ALBUM, setFavorite, condition, null);
+    }
+
+    public void deleteAlbum(Album album){
+        String condition = Queries.COLUMN_ID +"="+album.getID();
+        database.delete(Queries.TABLE_ALBUM,condition,null);
+    }
+
+    public Bitmap getFavoriteAlbumCover(){
+        String condition = Queries.COLUMN_FAVORITE_ALBUM +"=1";
+
+        String[] coloums = {Queries.COLUMN_FAVORITE_ALBUM,Queries.COLUMN_BITMAP};
+        Cursor cursor = database.query(Queries.TABLE_ALBUM,
+                coloums, condition, null,
+                null, null, null);
+
+        cursor.moveToFirst();
+        try {
+            byte[] bitmapBlob = cursor.getBlob(cursor.getColumnIndex(Queries.COLUMN_BITMAP));
+            return blobToBitmap(bitmapBlob);
+        }catch (CursorIndexOutOfBoundsException|NullPointerException npee){
+            return null;
+        }
     }
 
     private Album cursorToAlbum(Cursor cursor) {

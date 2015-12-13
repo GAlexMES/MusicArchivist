@@ -58,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -86,13 +92,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        drawerToggle.syncState();
-    }
-
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         drawerToggle.onConfigurationChanged(newConfig);
@@ -103,10 +102,19 @@ public class MainActivity extends AppCompatActivity {
         return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
     }
 
-    public void setImageToNavigationDrawer(Bitmap bdm){
-        LinearLayout header = (LinearLayout)navigationDrawer.findViewById(R.id.navigation_drawer_header);
-        Drawable backgroundImage = new BitmapDrawable(bdm);
-        header.setBackground(backgroundImage);
+    public boolean setImageToNavigationDrawer(Bitmap bdm) {
+        LinearLayout header = (LinearLayout) findViewById(R.id.navigation_drawer_header);
+        if (header != null) {
+            if (bdm != null) {
+                Drawable backgroundImage = new BitmapDrawable(bdm);
+                header.setBackground(backgroundImage);
+            } else {
+                header.setBackgroundResource(0);
+                header.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            }
+            return true;
+        }
+        return false;
     }
 
     private void initNavigationDrawer(Context context) {
@@ -165,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         sqLiteSourceAdapter.open();
         List<Album> albumList = sqLiteSourceAdapter.getAllAlbums();
         Fragment albumFragment = new AlbumListFragment();
-        ((AlbumListFragment)albumFragment).setAlbums(albumList);
+        ((AlbumListFragment) albumFragment).setAlbums(albumList);
         showFragment(albumFragment);
     }
 
@@ -223,8 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intentMain = new Intent(this, EditAlbumDataActivity.class);
                 intentMain.putExtra("BARCODE", contents);
                 startActivity(intentMain);
-            }
-            else{
+            } else {
                 Toast toast = Toast.makeText(this, "Could not scan correctly!", Toast.LENGTH_LONG);
                 toast.show();
             }
