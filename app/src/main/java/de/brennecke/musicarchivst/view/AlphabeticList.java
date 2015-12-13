@@ -1,6 +1,7 @@
 package de.brennecke.musicarchivst.view;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +21,23 @@ import de.brennecke.musicarchivst.R;
 /**
  * Created by Alexander on 05.12.2015.
  */
-public class AlphabeticList implements View.OnClickListener {
+public class AlphabeticList implements View.OnClickListener, View.OnLongClickListener {
+
+    private static final String TAG = AlphabeticList.class.getSimpleName();
 
     private ListView listView;
     private View view;
     private AdapterView.OnItemClickListener onItemClickListener;
+    private AdapterView.OnItemLongClickListener onItemLongClickListener;
     private String[] items;
 
     private HashMap<String, Integer> sections;
 
-    public AlphabeticList(String[] items, AdapterView.OnItemClickListener onItemClickListener){
-        this.onItemClickListener=onItemClickListener;
+
+
+    public AlphabeticList(String[] items, AdapterView.OnItemClickListener oICL, AdapterView.OnItemLongClickListener oILCL){
+        this.onItemClickListener=oICL;
+        this.onItemLongClickListener=oILCL;
         this.items = items;
     }
 
@@ -40,6 +47,7 @@ public class AlphabeticList implements View.OnClickListener {
         listView.setAdapter(new ArrayAdapter<String>(activity,
                 android.R.layout.simple_list_item_1, items));
         listView.setOnItemClickListener(onItemClickListener);
+        listView.setOnItemLongClickListener(onItemLongClickListener);
         getIndexList();
         displayIndex(activity);
         return view;
@@ -54,6 +62,7 @@ public class AlphabeticList implements View.OnClickListener {
             textView = (TextView) activity.getLayoutInflater().inflate(R.layout.item_row, null);
             textView.setText(index);
             textView.setOnClickListener(this);
+            textView.setOnLongClickListener(this);
             indexLayout.addView(textView);
         }
     }
@@ -71,7 +80,13 @@ public class AlphabeticList implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        TextView selectedIndex = (TextView) v;
-        listView.setSelection(sections.get(selectedIndex.getText()));
+        TextView selected = (TextView) v;
+        listView.setSelection(sections.get(selected.getText()));
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        Log.d(TAG, "clicked");
+        return false;
     }
 }

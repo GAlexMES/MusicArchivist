@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_settings:
+                Class fragmentClass = SettingsFragment.class;
+                setFragment(fragmentClass);
                 return true;
         }
 
