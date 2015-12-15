@@ -1,0 +1,41 @@
+<resources>
+    <string name="action_settings">EInstellungen</string>
+    <string name="action_save">Speichern</string>
+    <string name="action_edit">Bearbeiten</string>
+
+
+    <string name="button_scan">Code scannen</string>
+    <string name="button_type_code">Code eingeben</string>
+    <string name="button_type_information">Album erstellen</string>
+
+    <string name="barcode_type_dialog_title">Code Eingabe</string>
+
+    <string name="not_enough_values">Bitte mindestens Titel und Interpret angeben</string>
+
+    <string name="drawer_open">Seitliches Menü öffnen</string>
+    <string name="drawer_close">Seitliches Menü schließen</string>
+
+    <string name="settings_favorite_album">Lieblingsalbum</string>
+
+    <string name="dialog_about_title">Informationen</string>
+    <string name="dialog_about_text">Diese Anwendung wurde von Alexander Brennecke entwickelt.\n
+        Der Quellcode kann auf GitHub gefunden werden.\n
+        Ein großer Dank an die Entwickler der Bibliotheken, welche verwendet wurden! \n</string>
+
+    <string name="github_link"><a href="http://github.com/GAlexMES/MusicArchivist">Der Quellcode ist hier auf Github verfügbar.</a></string>
+    <string name="license_link"><a href="http://github.com/GAlexMES/MusicArchivist/blob/master/LICENSE">Die License ist hier verfügbar.!</a></string>
+    <string name="readme_link"><a href="http://github.com/GAlexMES/MusicArchivist/blob/master/README.md">Eine Liste der verwendeten Bibliotheken und ihre Licensen!</a></string>
+
+    <string name="dialog_duplicated_album">Doppeltes Album</string>
+    <string name="dialog_duplicated_album_info">Es ist bereits ein Album mit dem gleichen Titel und Artisten gespeichert. Leider ist es im Moment nicht möglich ein Album doppelt zu speichern. Bitte ändern sie den Namen oder den Titel des Albums und versuchen sie es erneut.</string>
+
+    <string name="download_barcode_title">Kein valider Barcode Scanner gefunden.</string>
+    <string name="download_barcode_message">Um ein Album einscannen zu können benötigen Sie einen Barcode Scanner. Möchten sie diesesn nun downloaden?</string>
+
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+
+    <string name="cancel">Abbrechen</string>
+    <string name="accept">Annehmen</string>
+
+</resources>

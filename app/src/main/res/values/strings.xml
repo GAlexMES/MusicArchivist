@@ -28,7 +28,7 @@
 
     <string name="dialog_about_title">About</string>
     <string name="dialog_about_text">This Application was developed by Alexander Brennecke.\n
-        The sourcecode is availabel under GitHub.\n
+        The sourcecode is available under GitHub.\n
         Big thank to the developers of the used libraries! \n</string>
 
     <string name="github_link"><a href="http://github.com/GAlexMES/MusicArchivist">The code can be found on GitHub!</a></string>
@@ -44,6 +44,8 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
+    <string name="cancel">Cancel</string>
+    <string name="accept">Accept</string>
     <string name="banner_ad_unit_id">ca-app-pub-2103522506634370/5386448044</string>
 
 </resources>
