@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     private Toolbar toolbar;
 
+    private MenuItem currentSelectedItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.onConfigurationChanged(newConfig);
     }
 
-
     private ActionBarDrawerToggle setupDrawerToggle() {
         return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
     }
@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void selectDrawerItem(MenuItem menuItem) {
         Fragment fragment = null;
+        boolean changeTitle = true;
 
         Class fragmentClass = null;
         switch (menuItem.getItemId()) {
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_about:
                 showAboutDialog();
+                changeTitle = false;
                 break;
             default:
                 fragmentClass = NewestFragment.class;
@@ -163,8 +165,17 @@ public class MainActivity extends AppCompatActivity {
         if (fragmentClass != null) {
             setFragment(fragmentClass);
         }
-        menuItem.setChecked(true);
-        setTitle(menuItem.getTitle());
+
+        if (changeTitle) {
+            setTitle(menuItem.getTitle());
+            menuItem.setCheckable(true);
+            menuItem.setChecked(true);
+            menuItem.setChecked(true);
+            if (currentSelectedItem != null) {
+                currentSelectedItem.setChecked(false);
+            }
+            currentSelectedItem = menuItem;
+        }
         drawerLayout.closeDrawers();
     }
 

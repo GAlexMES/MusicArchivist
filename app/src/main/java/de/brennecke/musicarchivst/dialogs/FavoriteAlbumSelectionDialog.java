@@ -42,7 +42,7 @@ public class FavoriteAlbumSelectionDialog  extends DialogFragment implements Ada
         gridAdapter = new GridViewAdapter(getActivity(), R.layout.favorite_album_grid_item, (ArrayList)albumList);
         gridView.setAdapter(gridAdapter);
         gridView.setOnItemClickListener(this);
-        getDialog().setTitle(R.string.dialog_about_title);
+        getDialog().setTitle(R.string.settings_favorite_album);
         return view;
     }
 
