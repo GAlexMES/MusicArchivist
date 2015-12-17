@@ -3,6 +3,12 @@
     <string name="action_save">Speichern</string>
     <string name="action_edit">Bearbeiten</string>
 
+    <string name="nav_drawer_newest">Neuste Alben</string>
+    <string name="nav_drawer_artists">Interpreten</string>
+    <string name="nav_drawer_albums">Alben</string>
+
+    <string name="nav_drawer_about">Informationen</string>
+    <string name="nav_drawer_settings">Einstellungen</string>
 
     <string name="button_scan">Code scannen</string>
     <string name="button_type_code">Code eingeben</string>

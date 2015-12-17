@@ -10,15 +10,15 @@
                 android:id="@+id/nav_newest"
                 android:checked="true"
                 android:icon="@drawable/ic_fiber_new_black_24dp"
-                android:title="Newest" />
+                android:title="@string/nav_drawer_newest" />
             <item
                 android:id="@+id/nav_artist"
                 android:icon="@drawable/ic_perm_identity_black_24dp"
-                android:title="Artists" />
+                android:title="@string/nav_drawer_artists" />
             <item
                 android:id="@+id/nav_albums"
                 android:icon="@drawable/ic_album_black_24dp"
-                android:title="Albums" />
+                android:title="@string/nav_drawer_albums" />
         </group>
 
         <group
@@ -28,11 +28,11 @@
             <item
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_settings_black_24dp"
-                android:title="Settings" />
+                android:title="@string/nav_drawer_settings" />
             <item
                 android:id="@+id/nav_about"
                 android:icon="@drawable/ic_info_outline_black_24dp"
-                android:title="About" />
+                android:title="@string/nav_drawer_about" />
         </group>
     </group>
 </menu>
