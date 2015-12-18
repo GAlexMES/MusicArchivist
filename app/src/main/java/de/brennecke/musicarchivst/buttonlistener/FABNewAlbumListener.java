@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.view.View;
 
 import de.brennecke.musicarchivst.R;
+import de.brennecke.musicarchivst.activities.EditAlbumDataActivity;
 import de.brennecke.musicarchivst.activities.MainActivity;
 import de.brennecke.musicarchivst.dialogs.BarcodeDownloadDialog;
 import de.brennecke.musicarchivst.dialogs.TypeBarcodeDialog;
@@ -44,7 +45,8 @@ public class FABNewAlbumListener implements View.OnClickListener {
             editNameDialog.show(manager, "fragment_edit_name");
 
         } else if (v.getId() == R.id.type_information) {
-
+            Intent intentMain = new Intent(activity, EditAlbumDataActivity.class);
+            ((MainActivity)activity).startActivity(intentMain);
         }
     }
 }
