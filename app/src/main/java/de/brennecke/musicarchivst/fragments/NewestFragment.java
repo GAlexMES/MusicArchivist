@@ -14,15 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-
 import java.util.List;
 
 import de.brennecke.musicarchivst.R;
 import de.brennecke.musicarchivst.activities.MainActivity;
-import de.brennecke.musicarchivst.buttonlistener.FABNewAlbumListener;
 import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.model.Exchange;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
@@ -32,7 +27,6 @@ import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
  */
 public class NewestFragment extends Fragment implements View.OnLayoutChangeListener {
 
-    private String MINE_TEST_DEVICE_ID = "55EB28184A0F147FB6A8E2FF0DCC64A9";
     private View view;
 
     private boolean replacedNavDrawerHeader = false;
@@ -42,33 +36,9 @@ public class NewestFragment extends Fragment implements View.OnLayoutChangeListe
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_newest_additions, container, false);
         view.addOnLayoutChangeListener(this);
-        initFABButtons();
-        initAd();
         initCards();
 
         return view;
-    }
-
-    private void initAd(){
-        AdView mAdView = (AdView) view.findViewById(R.id.adView);
-        AdRequest request = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice(MINE_TEST_DEVICE_ID)
-                .build();
-        mAdView.loadAd(request);
-    }
-
-    private void initFABButtons() {
-
-        FloatingActionButton scanButton = (FloatingActionButton) view.findViewById(R.id.scan_fab);
-        if (scanButton != null) {
-            scanButton.setOnClickListener(new FABNewAlbumListener((MainActivity)getActivity()));
-        }
-
-        FloatingActionButton typeCodeButton = (FloatingActionButton) view.findViewById(R.id.type_code);
-        if (typeCodeButton != null) {
-            typeCodeButton.setOnClickListener(new FABNewAlbumListener((MainActivity)getActivity()));
-        }
     }
 
     private void initCards() {

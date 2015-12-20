@@ -23,11 +23,12 @@
 
         <LinearLayout
             android:id="@+id/side_index"
-            android:layout_width="50dp"
+            android:layout_width="25dp"
             android:layout_height="fill_parent"
-            android:background="#c3c3c3"
             android:gravity="center_horizontal"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textStyle="bold">
         </LinearLayout>
 
     </LinearLayout>

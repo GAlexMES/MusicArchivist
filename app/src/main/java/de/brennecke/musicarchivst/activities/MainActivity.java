@@ -19,13 +19,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.List;
 
 import de.brennecke.musicarchivst.R;
+import de.brennecke.musicarchivst.buttonlistener.FABNewAlbumListener;
 import de.brennecke.musicarchivst.buttonlistener.SearchViewListener;
 import de.brennecke.musicarchivst.dialogs.AboutDialog;
 import de.brennecke.musicarchivst.fragments.AlbumListFragment;
@@ -36,7 +42,7 @@ import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnLayoutChangeListener{
 
     private SearchView searchView;
     private DrawerLayout drawerLayout;
@@ -46,16 +52,24 @@ public class MainActivity extends AppCompatActivity {
 
     private MenuItem currentSelectedItem;
 
+    private String MINE_TEST_DEVICE_ID = "55EB28184A0F147FB6A8E2FF0DCC64A9";
+
+    private boolean replaceNavDrawerHeader = true;
+    private boolean initAds = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initToolbar();
+        initFABButtons();
         initNavigationDrawer(getApplicationContext());
         drawerToggle = setupDrawerToggle();
         drawerLayout.setDrawerListener(drawerToggle);
         MenuItem initItem = navigationDrawer.getMenu().getItem(0);
         selectDrawerItem(initItem);
+        initAd();
+        findViewById(android.R.id.content).addOnLayoutChangeListener(this);
     }
 
     @Override
@@ -96,6 +110,20 @@ public class MainActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        if(replaceNavDrawerHeader){
+            SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(this);
+            sqLiteSourceAdapter.open();
+            Bitmap bm = sqLiteSourceAdapter.getFavoriteAlbumCover();
+            replaceNavDrawerHeader = !setImageToNavigationDrawer(bm);
+        }
+
+        if(initAds){
+            initAds=!initAd();
+        }
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
@@ -220,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
         if (searchManager != null) {
             List<SearchableInfo> searchables = searchManager.getSearchablesInGlobalSearch();
 
-            // Try to use the "applications" global search provider
             SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
             for (SearchableInfo inf : searchables) {
                 if (inf.getSuggestAuthority() != null
@@ -234,6 +261,34 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchViewListener(this));
         searchView.setOnCloseListener(new SearchViewListener(this));
     }
+
+    private void initFABButtons() {
+        FloatingActionButton scanButton = (FloatingActionButton) findViewById(R.id.scan_fab);
+        if (scanButton != null) {
+            scanButton.setOnClickListener(new FABNewAlbumListener(this));
+        }
+
+        FloatingActionButton typeCodeButton = (FloatingActionButton) findViewById(R.id.type_code);
+        if (typeCodeButton != null) {
+            typeCodeButton.setOnClickListener(new FABNewAlbumListener(this));
+        }
+    }
+
+    private boolean initAd(){
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        if(mAdView==null){
+            return false;
+        }
+        else {
+            AdRequest request = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .addTestDevice(MINE_TEST_DEVICE_ID)
+                    .build();
+            mAdView.loadAd(request);
+            return true;
+        }
+    }
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == 0) {
