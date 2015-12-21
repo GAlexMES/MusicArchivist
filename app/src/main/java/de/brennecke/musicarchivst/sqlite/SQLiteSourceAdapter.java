@@ -8,6 +8,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ import de.brennecke.musicarchivst.model.Album;
  * Created by Alexander on 28.10.2015.
  */
 public class SQLiteSourceAdapter {
+
+    private static final String TAG = SQLiteSourceAdapter.class.getSimpleName();
 
     private SQLiteDatabase database;
     private SQLiteHelper dbHelper;
@@ -94,7 +98,7 @@ public class SQLiteSourceAdapter {
     public List<Album> getAllArtists() {
         List<String> artistNames = new ArrayList<>();
         List<Album> artistList = new ArrayList<Album>();
-        Cursor cursor = database.query(Queries.TABLE_ALBUM,  Queries.TABLE_ALBUM_COLUMNS, "", null, null, null, null);
+        Cursor cursor = database.query(Queries.TABLE_ALBUM, Queries.TABLE_ALBUM_COLUMNS, "", null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -131,7 +135,7 @@ public class SQLiteSourceAdapter {
     public List<Album> getAllAlbums() {
         List<Album> albumList = new ArrayList<Album>();
 
-        Cursor cursor = database.query(Queries.TABLE_ALBUM,  Queries.TABLE_ALBUM_COLUMNS, "", null, null, null, null);
+        Cursor cursor = database.query(Queries.TABLE_ALBUM, Queries.TABLE_ALBUM_COLUMNS, "", null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -151,27 +155,27 @@ public class SQLiteSourceAdapter {
         return cursor.getCount() == 0 ? false : true;
     }
 
-    public void setFavoriteAlbum(Album album){
+    public void setFavoriteAlbum(Album album) {
         ContentValues removeAllFavorites = new ContentValues();
         removeAllFavorites.put(Queries.COLUMN_FAVORITE_ALBUM, 0);
-        String condition ="";
+        String condition = "";
         database.update(Queries.TABLE_ALBUM, removeAllFavorites, null, null);
 
         ContentValues setFavorite = new ContentValues();
         setFavorite.put(Queries.COLUMN_FAVORITE_ALBUM, 1);
-        condition = Queries.COLUMN_ID +"="+ album.getID();
+        condition = Queries.COLUMN_ID + "=" + album.getID();
         database.update(Queries.TABLE_ALBUM, setFavorite, condition, null);
     }
 
-    public void deleteAlbum(Album album){
-        String condition = Queries.COLUMN_ID +"="+album.getID();
-        database.delete(Queries.TABLE_ALBUM,condition,null);
+    public void deleteAlbum(Album album) {
+        String condition = Queries.COLUMN_ID + "=" + album.getID();
+        database.delete(Queries.TABLE_ALBUM, condition, null);
     }
 
-    public Bitmap getFavoriteAlbumCover(){
-        String condition = Queries.COLUMN_FAVORITE_ALBUM +"=1";
+    public Bitmap getFavoriteAlbumCover() {
+        String condition = Queries.COLUMN_FAVORITE_ALBUM + "=1";
 
-        String[] coloums = {Queries.COLUMN_FAVORITE_ALBUM,Queries.COLUMN_BITMAP};
+        String[] coloums = {Queries.COLUMN_FAVORITE_ALBUM, Queries.COLUMN_BITMAP};
         Cursor cursor = database.query(Queries.TABLE_ALBUM,
                 coloums, condition, null,
                 null, null, null);
@@ -180,7 +184,7 @@ public class SQLiteSourceAdapter {
         try {
             byte[] bitmapBlob = cursor.getBlob(cursor.getColumnIndex(Queries.COLUMN_BITMAP));
             return blobToBitmap(bitmapBlob);
-        }catch (CursorIndexOutOfBoundsException|NullPointerException npee){
+        } catch (CursorIndexOutOfBoundsException | NullPointerException npee) {
             return null;
         }
     }
@@ -215,5 +219,11 @@ public class SQLiteSourceAdapter {
         } catch (NullPointerException npee) {
             return null;
         }
+    }
+
+    public Uri getDatabaseURI() {
+        String path = database.getPath();
+        Log.d(TAG, path);
+        return Uri.parse(path);
     }
 }

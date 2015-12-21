@@ -1,5 +1,7 @@
 package de.brennecke.musicarchivst.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 
 import de.brennecke.musicarchivst.R;
 import de.brennecke.musicarchivst.dialogs.FavoriteAlbumSelectionDialog;
+import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
 
 /**
  * Created by Alexander on 12.12.2015.
@@ -24,6 +27,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         view.findViewById(R.id.settings_favorite_album).setOnClickListener(this);
+        view.findViewById(R.id.settings_share_database).setOnClickListener(this);
 
         return view;
     }
@@ -38,11 +42,28 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         FavoriteAlbumSelectionDialog aboutDialog = new FavoriteAlbumSelectionDialog();
         aboutDialog.show(manager, "dialog_favorite_album_selection");
     }
+    private void shareDatabase(){
+
+        SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(getActivity());
+        sqLiteSourceAdapter.open();
+        Uri dbURI = sqLiteSourceAdapter.getDatabaseURI();
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_STREAM, dbURI);
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
+    }
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.settings_favorite_album){
-            showFavoriteAlbumSelection();
+        switch(v.getId()){
+            case R.id.settings_favorite_album:
+                showFavoriteAlbumSelection();
+                break;
+            case R.id.settings_share_database:
+                shareDatabase();
+                break;
         }
     }
 }

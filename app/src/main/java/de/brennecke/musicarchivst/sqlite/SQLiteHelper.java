@@ -34,5 +34,4 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         }
         Log.d(TAG, "Upgrading database from version " + oldVersion + " to "+ newVersion + ".");
     }
-
 }

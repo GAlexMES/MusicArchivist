@@ -31,6 +31,7 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <string name="settings_favorite_album">Favorite album</string>
+    <string name="settings_share_database">Share Database</string>
 
     <string name="dialog_about_title">About</string>
     <string name="dialog_about_text">This Application was developed by Alexander Brennecke.\n
