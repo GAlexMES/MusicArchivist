@@ -3,11 +3,14 @@ package de.brennecke.musicarchivst.fragments;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.io.File;
 
 import de.brennecke.musicarchivst.R;
 import de.brennecke.musicarchivst.dialogs.FavoriteAlbumSelectionDialog;
@@ -48,10 +51,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         sqLiteSourceAdapter.open();
         Uri dbURI = sqLiteSourceAdapter.getDatabaseURI();
 
+        File root = Environment.getExternalStorageDirectory();
+        String fileName = dbURI.toString();
+
+        File attachment = new File(fileName);
+
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_STREAM, dbURI);
-        sendIntent.setType("text/plain");
+        sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(attachment));
+        sendIntent.setDataAndTypeAndNormalize(Uri.fromFile(attachment),"*/*");
         startActivity(sendIntent);
     }
 
