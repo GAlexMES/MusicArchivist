@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.brennecke.musicarchivst.activities.ShowAlbumActivity;
 import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.model.Exchange;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;

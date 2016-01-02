@@ -44,8 +44,7 @@ public class AlphabeticList implements View.OnClickListener, View.OnLongClickLis
     public View createView(LayoutInflater inflater, ViewGroup container, Activity activity){
         view = inflater.inflate(R.layout.fragment_artist_list, container, false);
         listView = (ListView) view.findViewById(R.id.list_artists);
-        listView.setAdapter(new ArrayAdapter<String>(activity,
-                android.R.layout.simple_list_item_1, items));
+        listView.setAdapter(new ArrayAdapter<String>(activity,android.R.layout.simple_list_item_1, items));
         listView.setOnItemClickListener(onItemClickListener);
         listView.setOnItemLongClickListener(onItemLongClickListener);
         getIndexList();

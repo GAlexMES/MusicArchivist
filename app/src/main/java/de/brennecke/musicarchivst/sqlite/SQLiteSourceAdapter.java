@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.brennecke.musicarchivst.model.Album;
+import de.brennecke.musicarchivst.model.Track;
+import de.brennecke.musicarchivst.model.Tracklist;
 
 /**
  * Created by Alexander on 28.10.2015.
@@ -41,6 +43,7 @@ public class SQLiteSourceAdapter {
 
     public void addAlbum(Album album) {
         ContentValues values = new ContentValues();
+        values.put(Queries.COLUMN_DISCOGS_ID, album.getID());
         values.put(Queries.COLUMN_ARTIST, album.getArtist());
         values.put(Queries.COLUMN_TITLE, album.getTitle());
         values.put(Queries.COLUMN_GENRE, album.getGenre());
@@ -51,9 +54,21 @@ public class SQLiteSourceAdapter {
         byte[] bitmap = bitmapToBlob(album.getCoverBitmap());
         values.put(Queries.COLUMN_BITMAP, (byte[]) getDefault(bitmap, new byte[1]));
 
-        values.put(Queries.COLUMN_DISCOGS_ID, album.getID());
-
         long insertId = database.insert(Queries.TABLE_ALBUM, null, values);
+
+        insertTracks(album.getTracklist(), album.getID());
+    }
+
+    private void insertTracks(Tracklist tracklist, long albumID) {
+        for (Track t : tracklist.getTracks()) {
+            ContentValues values = new ContentValues();
+            values.put(Queries.COLUMN_ALBUM_ID, albumID);
+            values.put(Queries.COLUMN_POSITION, t.getTrackNumber());
+            values.put(Queries.COLUMN_TRACK_TITLE, t.getName());
+            values.put(Queries.COLUMN_DURATION, t.getDuration());
+
+            long insertID = database.insert(Queries.TABLE_TRACKS, null, values);
+        }
     }
 
     private Object getDefault(Object value, Object defaultValue) {
@@ -65,14 +80,16 @@ public class SQLiteSourceAdapter {
 
     public Album getAlbum(String artist, String title) {
         String condition = Queries.COLUMN_ARTIST + "=" + artist + " AND "
-                + Queries.COLUMN_TITLE + "=" + title;
+                + Queries.COLUMN_TITLE + "=? AND " + Queries.COLUMN_DISCOGS_ID + "=?";
 
-        Cursor cursor = database.query(Queries.TABLE_ALBUM,
-                Queries.TABLE_ALBUM_COLUMNS, condition, null,
-                null, null, null);
+        String sqliteQuery = "SELECT * FROM " + Queries.TABLE_ALBUM + " INNER JOIN " + Queries.TABLE_TRACKS + condition;
+
+        String[] selectionArguments = {title, Queries.COLUMN_ALBUM_ID};
+        Cursor cursor = database.rawQuery(sqliteQuery, selectionArguments);
 
         cursor.moveToFirst();
         Album newAlbum = cursorToAlbum(cursor);
+        newAlbum.setTracklist(cursorToTracklist(cursor));
         cursor.close();
         return newAlbum;
     }
@@ -129,7 +146,23 @@ public class SQLiteSourceAdapter {
             cursor.moveToNext();
         }
         cursor.close();
+
+        for (Album a : albumList) {
+            Tracklist t = getTracklist(a.getID());
+            a.setTracklist(t);
+        }
         return albumList;
+    }
+
+    private Tracklist getTracklist(long albumID) {
+        String condition = Queries.COLUMN_ALBUM_ID + "='" + albumID + "'";
+        Cursor cursor = database.query(Queries.TABLE_TRACKS,
+                Queries.TABLE_TRACKS_COLUMNS, condition, null,
+                null, null, null);
+
+        Tracklist retval= cursorToTracklist(cursor);
+        cursor.close();
+        return retval;
     }
 
     public List<Album> getAllAlbums() {
@@ -144,6 +177,11 @@ public class SQLiteSourceAdapter {
             cursor.moveToNext();
         }
         cursor.close();
+
+        for (Album a : albumList) {
+            Tracklist t = getTracklist(a.getID());
+            a.setTracklist(t);
+        }
         return albumList;
     }
 
@@ -191,7 +229,7 @@ public class SQLiteSourceAdapter {
 
     private Album cursorToAlbum(Cursor cursor) {
         Album album = new Album();
-        album.setID(cursor.getLong(cursor.getColumnIndex(Queries.COLUMN_ID)));
+        album.setID(cursor.getLong(cursor.getColumnIndex(Queries.COLUMN_DISCOGS_ID)));
         album.setTitle(cursor.getString(cursor.getColumnIndex(Queries.COLUMN_TITLE)));
         album.setArtist(cursor.getString(cursor.getColumnIndex(Queries.COLUMN_ARTIST)));
         album.setAlbumCoverURL(cursor.getString(cursor.getColumnIndex(Queries.COLUMN_COVERURL)));
@@ -200,7 +238,27 @@ public class SQLiteSourceAdapter {
         album.setCoverBitmap(blobToBitmap(bitmapBlob));
 
         album.setGenre(cursor.getString(cursor.getColumnIndex(Queries.COLUMN_GENRE)));
+
         return album;
+    }
+
+    private Tracklist cursorToTracklist(Cursor cursor) {
+        Tracklist retval = new Tracklist();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Track t = cursorToTrack(cursor);
+            retval.addTrack(t);
+            cursor.moveToNext();
+        }
+        return retval;
+    }
+
+    private Track cursorToTrack(Cursor cursor) {
+        Track t = new Track();
+        t.setDuration(cursor.getInt(cursor.getColumnIndex(Queries.COLUMN_DURATION)));
+        t.setTrackNumber(cursor.getInt(cursor.getColumnIndex(Queries.COLUMN_POSITION)));
+        t.setName(cursor.getString(cursor.getColumnIndex(Queries.COLUMN_TRACK_TITLE)));
+        return t;
     }
 
     private Bitmap blobToBitmap(byte[] bytes) {

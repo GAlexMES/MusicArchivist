@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import de.brennecke.musicarchivst.R;
@@ -26,12 +27,15 @@ import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.model.Exchange;
 import de.brennecke.musicarchivst.servicehandler.DownloadTask;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
+import de.brennecke.musicarchivst.view.TracklistHandler;
 
 /**
  * Created by Alexander on 27.10.2015.
  */
 public class EditAlbumDataActivity extends AppCompatActivity {
     private EditText artistTxt, albumTxt, genreTxt;
+
+    private LinearLayout tracklistList;
 
     private static final String TAG = EditAlbumDataActivity.class.getSimpleName();
 
@@ -123,6 +127,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         addInputMethod(albumTxt);
         genreTxt = (EditText) findViewById(R.id.genre_text);
         addInputMethod(genreTxt);
+        tracklistList = (LinearLayout) findViewById(R.id.tracklist_view);
     }
 
     private void initProgressDialog() {
@@ -138,6 +143,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         artistTxt.setText(album.getArtist());
         albumTxt.setText(album.getTitle());
         genreTxt.setText(album.getGenre());
+        TracklistHandler.update(tracklistList, album.getTracklist(), this);
         albumCoverImage.setImageBitmap(album.getCoverBitmap());
     }
 
@@ -213,7 +219,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
     }
 
     private Album getCurrentEnteredValues() {
-        Album retval = new Album();
+        Album retval = new Album(album);
         retval.setArtist(artistTxt.getText().toString());
         retval.setGenre(genreTxt.getText().toString());
         retval.setTitle(albumTxt.getText().toString());

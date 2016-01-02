@@ -18,6 +18,7 @@ import java.util.List;
 
 import de.brennecke.musicarchivst.R;
 import de.brennecke.musicarchivst.activities.MainActivity;
+import de.brennecke.musicarchivst.activities.ShowAlbumActivity;
 import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.model.Exchange;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;

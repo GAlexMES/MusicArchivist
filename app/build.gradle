@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.android.databinding'
 
 android {
+
     lintOptions {
         abortOnError false
     }
