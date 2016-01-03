@@ -8,6 +8,7 @@
 
     <EditText
         android:id="@+id/artist_name_text"
+        android:focusable="false"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textIsSelectable="true"
@@ -21,6 +22,7 @@
 
     <EditText
         android:id="@+id/album_name_text"
+        android:focusable="false"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textIsSelectable="true"
@@ -34,9 +36,10 @@
 
     <EditText
         android:id="@+id/genre_text"
+        android:focusable="false"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:textIsSelectable="true"
+        android:layout_centerHorizontal="true"
         android:inputType="text"
         android:text=""
         android:layout_width="fill_parent"

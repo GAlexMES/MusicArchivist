@@ -2,27 +2,6 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\Alexander\.gradle\caches\modules-2\files-2.1\com.nineoldandroids\library\2.4.0\e9b63380f3a242dbdbf103a2355ad7e43bad17cb\library-2.4.0.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
-        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\library-2.4.0-5af5ec7cccfb760c9ab2c1a5e8389b74662e6a91.jar" />
-    </item>
-    <item
-        jar="C:\Users\Alexander\AppData\Local\Android\sdk\extras\android\m2repository\com\android\databinding\adapters\1.0-rc1\adapters-1.0-rc1.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="8a82ed058e9e709740dd89c88e1be77196a71eee">
-        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\adapters-1.0-rc1-7686949cd6937012503b798b53b4e6235da06114.jar" />
-    </item>
-    <item
-        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.1.1\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="09c5e804bc67fc0580360043dff067df574a60d4">
-        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-d0883c1269b10f9a7916fa5b0653d1c12c37b0f3.jar" />
-    </item>
-    <item
         jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.0\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
@@ -37,27 +16,6 @@
         <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-ca246c01f3504cee3ca444de4010801209e51185.jar" />
     </item>
     <item
-        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.android.support\design\23.1.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="19026d31f5d3ae868db81319671a642be5fbba08">
-        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-bba7b676ae0e9ad923c1319db88022b7ed063254.jar" />
-    </item>
-    <item
-        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="345a1b5cf5b144ce18ba6962bc66a7e2f26c1c1b">
-        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-8a735c05acaab700c8f040fe5c0b6ce307587e8f.jar" />
-    </item>
-    <item
-        jar="C:\Users\Alexander\.gradle\caches\modules-2\files-2.1\com.google.zxing\core\3.2.1\2287494d4f5f9f3a9a2bb6980e3f32053721b315\core-3.2.1.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="2287494d4f5f9f3a9a2bb6980e3f32053721b315">
-        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\core-3.2.1-4e7bfe7cd2fcb6265c40d967cafb94d015e33b6d.jar" />
-    </item>
-    <item
         jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.github.vajro\MaterialDesignLibrary\1.6\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
@@ -65,11 +23,11 @@
         <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-fcbe1744665c3fab25cfb691fa40b4678cbdc0c7.jar" />
     </item>
     <item
-        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
+        jar="C:\Users\Alexander\.gradle\caches\modules-2\files-2.1\com.nineoldandroids\library\2.4.0\e9b63380f3a242dbdbf103a2355ad7e43bad17cb\library-2.4.0.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
-        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-2863afad54cdbf9e717db4126f028578ab037175.jar" />
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
+        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\library-2.4.0-5af5ec7cccfb760c9ab2c1a5e8389b74662e6a91.jar" />
     </item>
     <item
         jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\23.1.1\jars\classes.jar"
@@ -77,6 +35,34 @@
         revision="23.0.1"
         sha1="5e412e954a24c5310a459c09870e4e2081aceb03">
         <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-71abba0462195206ad752fea9963fc02646797a8.jar" />
+    </item>
+    <item
+        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.android.databinding\library\1.0-rc1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8343ce741100717e95bd5c4ad7baa4fd31b73f1b">
+        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-55ea18dcaeccdd4da97841dd0d1528e997203628.jar" />
+    </item>
+    <item
+        jar="C:\Users\Alexander\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.1.1\support-annotations-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\support-annotations-23.1.1-c596cb6de191be95ddafd74314f239d771e099c6.jar" />
+    </item>
+    <item
+        jar="C:\Users\Alexander\AppData\Local\Android\sdk\extras\android\m2repository\com\android\databinding\adapters\1.0-rc1\adapters-1.0-rc1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8a82ed058e9e709740dd89c88e1be77196a71eee">
+        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\adapters-1.0-rc1-7686949cd6937012503b798b53b4e6235da06114.jar" />
+    </item>
+    <item
+        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-ads\8.3.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="27775d59b16610ac76f1b83693fedd9520396332">
+        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-6770a5acde03390ffe7d315b3b627951c7f50280.jar" />
     </item>
     <item
         jar="C:\Users\Alexander\.gradle\caches\modules-2\files-2.1\com.android.databinding\baseLibrary\1.0-rc1\3ff7c148dedcb5bb8e24d39292c7fdf4f92f1c1b\baseLibrary-1.0-rc1.jar"
@@ -93,25 +79,39 @@
         <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\android-integration-3.2.1-21660a12b754cfc191b67f3c099a8ed98645388c.jar" />
     </item>
     <item
-        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-ads\8.3.0\jars\classes.jar"
+        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="27775d59b16610ac76f1b83693fedd9520396332">
-        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-6770a5acde03390ffe7d315b3b627951c7f50280.jar" />
+        sha1="345a1b5cf5b144ce18ba6962bc66a7e2f26c1c1b">
+        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-8a735c05acaab700c8f040fe5c0b6ce307587e8f.jar" />
     </item>
     <item
-        jar="C:\Users\Alexander\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.1.1\support-annotations-23.1.1.jar"
+        jar="C:\Users\Alexander\.gradle\caches\modules-2\files-2.1\com.google.zxing\core\3.2.1\2287494d4f5f9f3a9a2bb6980e3f32053721b315\core-3.2.1.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
-        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\support-annotations-23.1.1-c596cb6de191be95ddafd74314f239d771e099c6.jar" />
+        sha1="2287494d4f5f9f3a9a2bb6980e3f32053721b315">
+        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\core-3.2.1-4e7bfe7cd2fcb6265c40d967cafb94d015e33b6d.jar" />
     </item>
     <item
-        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.android.databinding\library\1.0-rc1\jars\classes.jar"
+        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.android.support\design\23.1.0\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="8343ce741100717e95bd5c4ad7baa4fd31b73f1b">
-        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-55ea18dcaeccdd4da97841dd0d1528e997203628.jar" />
+        sha1="19026d31f5d3ae868db81319671a642be5fbba08">
+        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-bba7b676ae0e9ad923c1319db88022b7ed063254.jar" />
+    </item>
+    <item
+        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="09c5e804bc67fc0580360043dff067df574a60d4">
+        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-d0883c1269b10f9a7916fa5b0653d1c12c37b0f3.jar" />
+    </item>
+    <item
+        jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
+        <dex dex="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\pre-dexed\debug\classes-2863afad54cdbf9e717db4126f028578ab037175.jar" />
     </item>
     <item
         jar="C:\Users\Alexander\Documents\GitHub\MusicArchivist\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\libs\internal_impl-23.1.1.jar"

@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -15,8 +17,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -32,8 +36,14 @@ import de.brennecke.musicarchivst.view.TracklistHandler;
 /**
  * Created by Alexander on 27.10.2015.
  */
-public class EditAlbumDataActivity extends AppCompatActivity {
+public class EditAlbumDataActivity extends AppCompatActivity implements View.OnFocusChangeListener, View.OnClickListener {
+    private enum MODE {SHOW, EDIT};
+
+    private FloatingActionButton faButton;
+
     private EditText artistTxt, albumTxt, genreTxt;
+
+    private EditText[] editableTextBoxes;
 
     private LinearLayout tracklistList;
 
@@ -45,23 +55,26 @@ public class EditAlbumDataActivity extends AppCompatActivity {
     private Album album;
 
     private boolean showExisting;
+    private boolean isChangeable = false;
+    FrameLayout main;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         album = new Album();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_edit_album);
+        main = (FrameLayout)findViewById(R.id.content_frame);
         initUI();
         String barcode = getIntent().getStringExtra("BARCODE");
-        if (barcode != null) {
+        showExisting = getIntent().getBooleanExtra("SHOW_EXISTING", false);
+        if (showExisting) {
+            album = Exchange.getInstance().getCurrentAlbum();
+            updateUI();
+        } else if (barcode != null) {
             showResult(barcode);
-
-        } else {
-            showExisting = getIntent().getBooleanExtra("SHOW_EXISTING", false);
-            if (showExisting) {
-                album = Exchange.getInstance().getCurrentAlbum();
-            }
         }
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     @Override
@@ -108,12 +121,12 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fabSaveButton = (FloatingActionButton) findViewById(R.id.fab_save_album);
-        if (fabSaveButton != null) {
-            fabSaveButton.setOnClickListener(new View.OnClickListener() {
+        faButton = (FloatingActionButton) findViewById(R.id.fab_save_album);
+        if (faButton != null) {
+            faButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    saveAlbumToDatabase();
+                    triggerEdit();
                 }
             });
         }
@@ -122,11 +135,12 @@ public class EditAlbumDataActivity extends AppCompatActivity {
 
     private void initTextFields() {
         artistTxt = (EditText) findViewById(R.id.artist_name_text);
-        addInputMethod(artistTxt);
         albumTxt = (EditText) findViewById(R.id.album_name_text);
-        addInputMethod(albumTxt);
         genreTxt = (EditText) findViewById(R.id.genre_text);
-        addInputMethod(genreTxt);
+        EditText[] textBoxes = {artistTxt,albumTxt,genreTxt};
+        editableTextBoxes = textBoxes;
+        addInputMethod(editableTextBoxes);
+        setFocusable(false,editableTextBoxes);
         tracklistList = (LinearLayout) findViewById(R.id.tracklist_view);
     }
 
@@ -147,27 +161,6 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         albumCoverImage.setImageBitmap(album.getCoverBitmap());
     }
 
-    private void addInputMethod(EditText editText) {
-        editText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                InputMethodManager m = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (m != null) {
-                    m.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
-                }
-            }
-        });
-        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                InputMethodManager m = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (m != null) {
-                    m.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
-                }
-            }
-        });
-    }
-
     private boolean saveAlbumToDatabase() {
         Log.i(TAG, "saveAlbum");
 
@@ -178,8 +171,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         boolean enoughInputs = checkAlbum(currentAlbum);
 
 
-
-        if(!enoughInputs){
+        if (!enoughInputs) {
             Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.not_enough_values), Toast.LENGTH_SHORT);
             toast.show();
             return false;
@@ -228,7 +220,7 @@ public class EditAlbumDataActivity extends AppCompatActivity {
         return retval;
     }
 
-    private boolean checkAlbum(Album album){
+    private boolean checkAlbum(Album album) {
         boolean titleAccepted = album.getTitle() != null && !album.getTitle().equals("");
         boolean artistAccepted = album.getArtist() != null && !album.getArtist().equals("");
         return titleAccepted && artistAccepted;
@@ -251,5 +243,74 @@ public class EditAlbumDataActivity extends AppCompatActivity {
     public void setAlbum(Album album) {
         this.album = album;
         updateUI();
+    }
+
+    private void triggerEdit() {
+        if(isChangeable){
+            saveAlbumToDatabase();
+            changeUI(MODE.SHOW);
+            Log.d(TAG, "triggered UI to mode show");
+        }
+        else{
+            changeUI(MODE.EDIT);
+            Log.d(TAG, "triggered UI to mode edit");
+        }
+        isChangeable = !isChangeable;
+    }
+
+    private void changeUI (MODE mode){
+        Bitmap icon = null;
+        switch (mode){
+            case EDIT:
+                icon = BitmapFactory.decodeResource(getResources(),
+                        R.drawable.ic_checked);
+                break;
+            case SHOW:
+                icon = BitmapFactory.decodeResource(getResources(),
+                        R.drawable.ic_mode_edit_white_24dp);
+                break;
+            default:
+                Log.e(TAG,"Unknown mode "+mode);
+        }
+
+        faButton.setImageBitmap(icon);
+        setFocusable(!isChangeable,editableTextBoxes);
+
+    }
+
+    private void addInputMethod(EditText... editText) {
+        for(EditText t : editText) {
+            t.setOnClickListener(this);
+            t.setOnFocusChangeListener(this);
+        }
+    }
+
+    private void setFocusable(boolean status,EditText... editTexts){
+        for(EditText t : editTexts) {
+            t.setFocusable(status);
+            t.setFocusableInTouchMode(status);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        v.setSelected(true);
+        if (isChangeable) {
+            InputMethodManager m = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (m != null) {
+                m.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
+            }
+        }
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        v.setSelected(true);
+        if (isChangeable) {
+            InputMethodManager m = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (m != null) {
+                m.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
+            }
+        }
     }
 }

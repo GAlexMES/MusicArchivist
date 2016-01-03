@@ -17,8 +17,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import de.brennecke.musicarchivst.R;
+import de.brennecke.musicarchivst.activities.EditAlbumDataActivity;
 import de.brennecke.musicarchivst.activities.MainActivity;
-import de.brennecke.musicarchivst.activities.ShowAlbumActivity;
 import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.model.Exchange;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
@@ -95,7 +95,8 @@ public class NewestFragment extends Fragment implements View.OnLayoutChangeListe
         @Override
         public void onClick(View v) {
             Exchange.getInstance().setCurrentAlbum(album);
-            Intent intentMain = new Intent(getActivity(), ShowAlbumActivity.class);
+            Intent intentMain = new Intent(getActivity(), EditAlbumDataActivity.class);
+            intentMain.putExtra("SHOW_EXISTING",true);
             getActivity().startActivity(intentMain);
         }
     }

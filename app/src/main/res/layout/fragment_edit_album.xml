@@ -57,7 +57,7 @@
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_save_album"
             style="@style/EditAlbumFabStyle"
-            android:src="@drawable/ic_checked"
+            android:src="@drawable/ic_mode_edit_white_24dp"
             app:layout_anchor="@id/app_bar_layout"
             app:layout_anchorGravity="bottom|right|end" />
 

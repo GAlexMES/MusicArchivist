@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.brennecke.musicarchivst.activities.ShowAlbumActivity;
+import de.brennecke.musicarchivst.activities.EditAlbumDataActivity;
 import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.model.Exchange;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
@@ -85,7 +85,8 @@ public class AlbumListFragment extends Fragment implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Album selected = albumMap.get(sortedAlbums[position]);
         Exchange.getInstance().setCurrentAlbum(selected);
-        Intent intentMain = new Intent(getActivity(), ShowAlbumActivity.class);
+        Intent intentMain = new Intent(getActivity(), EditAlbumDataActivity.class);
+        intentMain.putExtra("SHOW_EXISTING",true);
         getActivity().startActivity(intentMain);
     }
 
