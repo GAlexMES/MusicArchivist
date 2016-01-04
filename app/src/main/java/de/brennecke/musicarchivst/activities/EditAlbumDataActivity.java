@@ -37,7 +37,11 @@ import de.brennecke.musicarchivst.view.TracklistHandler;
  * Created by Alexander on 27.10.2015.
  */
 public class EditAlbumDataActivity extends AppCompatActivity implements View.OnFocusChangeListener, View.OnClickListener {
-    private enum MODE {SHOW, EDIT};
+    private enum MODE {SHOW, EDIT}
+
+    ;
+
+    private Menu menu;
 
     private FloatingActionButton faButton;
 
@@ -56,6 +60,7 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
 
     private boolean showExisting;
     private boolean isChangeable = false;
+
     FrameLayout main;
 
     @Override
@@ -63,7 +68,7 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
         album = new Album();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_edit_album);
-        main = (FrameLayout)findViewById(R.id.content_frame);
+        main = (FrameLayout) findViewById(R.id.content_frame);
         initUI();
         String barcode = getIntent().getStringExtra("BARCODE");
         showExisting = getIntent().getBooleanExtra("SHOW_EXISTING", false);
@@ -80,6 +85,7 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_edit_album, menu);
         return true;
     }
@@ -88,8 +94,8 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_save:
-                saveAlbumToDatabase();
+            case R.id.trigger_view:
+                triggerMode();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -127,7 +133,7 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
             faButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    triggerEdit();
+                    triggerMode();
                 }
             });
         }
@@ -138,7 +144,7 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
         artistTxt = (EditText) findViewById(R.id.artist_name_text);
         albumTxt = (EditText) findViewById(R.id.album_name_text);
         genreTxt = (EditText) findViewById(R.id.genre_text);
-        EditText[] textBoxes = {artistTxt,albumTxt,genreTxt};
+        EditText[] textBoxes = {artistTxt, albumTxt, genreTxt};
         editableTextBoxes = textBoxes;
         addInputMethod(editableTextBoxes);
         setFocusable(false, editableTextBoxes);
@@ -246,48 +252,51 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
         updateUI();
     }
 
-    private void triggerEdit() {
-        if(isChangeable){
+    private void triggerMode() {
+        if (isChangeable) {
             saveAlbumToDatabase();
             changeUI(MODE.SHOW);
             Log.d(TAG, "triggered UI to mode show");
-        }
-        else{
+        } else {
             changeUI(MODE.EDIT);
             Log.d(TAG, "triggered UI to mode edit");
         }
         isChangeable = !isChangeable;
     }
 
-    private void changeUI (MODE mode){
-        Bitmap icon = null;
-        switch (mode){
+    private void changeUI(MODE mode) {
+        int fabIconID = R.drawable.ic_checked;
+        int menuIconID = R.drawable.ic_save_white_24dp;
+        switch (mode) {
             case EDIT:
-                icon = BitmapFactory.decodeResource(getResources(),
-                        R.drawable.ic_checked);
+                fabIconID = R.drawable.ic_checked;
+                menuIconID = R.drawable.ic_save_white_24dp;
                 break;
             case SHOW:
-                icon = BitmapFactory.decodeResource(getResources(),
-                        R.drawable.ic_mode_edit_white_24dp);
+                fabIconID =  R.drawable.ic_mode_edit_white_24dp;
+                menuIconID = fabIconID;
                 break;
             default:
-                Log.e(TAG,"Unknown mode "+mode);
+                Log.e(TAG, "Unknown mode " + mode);
         }
 
+        menu.findItem(R.id.trigger_view).setIcon(menuIconID);
+        Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                fabIconID);
         faButton.setImageBitmap(icon);
-        setFocusable(!isChangeable,editableTextBoxes);
+        setFocusable(!isChangeable, editableTextBoxes);
 
     }
 
     private void addInputMethod(EditText... editText) {
-        for(EditText t : editText) {
+        for (EditText t : editText) {
             t.setOnClickListener(this);
             t.setOnFocusChangeListener(this);
         }
     }
 
-    private void setFocusable(boolean status,EditText... editTexts){
-        for(EditText t : editTexts) {
+    private void setFocusable(boolean status, EditText... editTexts) {
+        for (EditText t : editTexts) {
             t.setFocusable(status);
             t.setFocusableInTouchMode(status);
         }

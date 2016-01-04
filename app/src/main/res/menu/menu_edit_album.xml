@@ -7,8 +7,8 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_save"
-        android:icon="@drawable/ic_save_white_24dp"
+        android:id="@+id/trigger_view"
+        android:icon="@drawable/ic_mode_edit_white_24dp"
         android:title="@string/action_save"
         app:showAsAction="ifRoom" />
 </menu>
