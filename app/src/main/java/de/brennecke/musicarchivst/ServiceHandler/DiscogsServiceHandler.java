@@ -121,7 +121,7 @@ public class DiscogsServiceHandler extends ServiceHandler {
 
         String title = JSONHelper.getString("title","-",track);
         retval.setName(title);
-        
+
         return retval;
     }
 

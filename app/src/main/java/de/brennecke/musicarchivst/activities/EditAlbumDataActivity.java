@@ -22,7 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 import de.brennecke.musicarchivst.R;
@@ -45,7 +45,7 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
 
     private EditText[] editableTextBoxes;
 
-    private LinearLayout tracklistList;
+    private TableLayout tracklistList;
 
     private static final String TAG = EditAlbumDataActivity.class.getSimpleName();
 
@@ -72,6 +72,7 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
             updateUI();
         } else if (barcode != null) {
             showResult(barcode);
+            changeUI(MODE.EDIT);
         }
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -140,8 +141,8 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
         EditText[] textBoxes = {artistTxt,albumTxt,genreTxt};
         editableTextBoxes = textBoxes;
         addInputMethod(editableTextBoxes);
-        setFocusable(false,editableTextBoxes);
-        tracklistList = (LinearLayout) findViewById(R.id.tracklist_view);
+        setFocusable(false, editableTextBoxes);
+        tracklistList = (TableLayout) findViewById(R.id.tracklist_view);
     }
 
     private void initProgressDialog() {
