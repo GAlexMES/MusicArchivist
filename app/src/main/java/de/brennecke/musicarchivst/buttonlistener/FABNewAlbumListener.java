@@ -46,7 +46,7 @@ public class FABNewAlbumListener implements View.OnClickListener {
 
         } else if (v.getId() == R.id.type_information) {
             Intent intentMain = new Intent(activity, EditAlbumDataActivity.class);
-            intentMain.putExtra("MODE", EditAlbumDataActivity.MODE.EDIT);
+            intentMain.putExtra("MODE", EditAlbumDataActivity.MODE.EDIT.ordinal());
             activity.startActivity(intentMain);
         }
     }

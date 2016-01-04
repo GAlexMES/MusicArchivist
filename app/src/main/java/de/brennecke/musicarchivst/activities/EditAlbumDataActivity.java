@@ -39,6 +39,7 @@ import de.brennecke.musicarchivst.view.TracklistHandler;
 public class EditAlbumDataActivity extends AppCompatActivity implements View.OnFocusChangeListener, View.OnClickListener {
     public enum MODE {SHOW, EDIT}
 
+    private MODE currentMODE;
     private Menu menu;
 
     private FloatingActionButton faButton;
@@ -78,9 +79,9 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
             showResult(barcode);
         }
 
-        int showModeAsInt = getIntent().getIntExtra("MODE",MODE.SHOW.ordinal());
-        MODE showMode = MODE.values()[showModeAsInt];
-        changeUI(showMode);
+        int showModeAsInt = getIntent().getIntExtra("MODE", MODE.SHOW.ordinal());
+
+        currentMODE = MODE.values()[showModeAsInt];
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
@@ -89,6 +90,7 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_edit_album, menu);
+        changeUI(currentMODE);
         return true;
     }
 
@@ -256,13 +258,17 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
 
     private void triggerMode() {
         if (isChangeable) {
-            saveAlbumToDatabase();
-            changeUI(MODE.SHOW);
-            Log.d(TAG, "triggered UI to mode show");
+            boolean succesfullSave = saveAlbumToDatabase();
+            if (succesfullSave) {
+                currentMODE = MODE.SHOW;
+                Log.d(TAG, "triggered UI to mode show");
+            }
         } else {
-            changeUI(MODE.EDIT);
+            currentMODE = MODE.EDIT;
             Log.d(TAG, "triggered UI to mode edit");
         }
+
+        changeUI(currentMODE);
     }
 
     private void changeUI(MODE mode) {
@@ -275,7 +281,7 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
                 isChangeable = true;
                 break;
             case SHOW:
-                fabIconID =  R.drawable.ic_mode_edit_white_24dp;
+                fabIconID = R.drawable.ic_mode_edit_white_24dp;
                 menuIconID = fabIconID;
                 isChangeable = false;
                 break;
@@ -287,7 +293,7 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
         Bitmap icon = BitmapFactory.decodeResource(getResources(),
                 fabIconID);
         faButton.setImageBitmap(icon);
-        setFocusable(!isChangeable, editableTextBoxes);
+        setFocusable(isChangeable, editableTextBoxes);
 
     }
 
