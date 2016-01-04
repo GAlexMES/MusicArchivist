@@ -1,5 +1,6 @@
 package de.brennecke.musicarchivst.servicehandler;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.StrictMode;
@@ -14,6 +15,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
+import de.brennecke.musicarchivst.ApplicationContextHelper;
+import de.brennecke.musicarchivst.R;
 import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.model.Track;
 import de.brennecke.musicarchivst.model.Tracklist;
@@ -24,7 +27,7 @@ import de.brennecke.musicarchivst.model.Tracklist;
 public class DiscogsServiceHandler extends ServiceHandler {
 
     private static final String QUERY_PLACEHOLDER = "%QUERYPLACEHOLDER%";
-    private static final String URL = "https://api.discogs.com/database/search?q="+QUERY_PLACEHOLDER+"&token=";
+    private static final String URL = "https://api.discogs.com/database/search?q=" + QUERY_PLACEHOLDER + "&token=";
     private static final String USER_TOKEN = "fGZuDSomRzFurkeAVMCYxZKnTWUWBqbPifrEUgwd";
 
     public static Album getDetailedInformation(String barcode, DownloadTask downloadTask) throws JSONException {
@@ -37,26 +40,15 @@ public class DiscogsServiceHandler extends ServiceHandler {
         JSONObject request = new JSONObject(getContentFromURL(requestURL));
         downloadTask.onProgressUpdate(10);
         JSONArray resultSet = request.getJSONArray("results");
-        for(int i = 0; i<resultSet.length();i++){
-            try{
+        for (int i = 0; i < resultSet.length(); i++) {
+            try {
                 downloadTask.onProgressUpdate(15);
                 String resourceURL = resultSet.getJSONObject(i).getString("resource_url");
                 retval.setID(resultSet.getJSONObject(i).getLong("id"));
                 JSONObject albumDetails = new JSONObject(getContentFromURL(resourceURL));
-                downloadTask.onProgressUpdate(20);
-                retval.setTitle(albumDetails.getString("title"));
-                retval.setGenre(albumDetails.getJSONArray("styles").getString(0));
-                retval.setArtist(albumDetails.getJSONArray("artists").getJSONObject(0).optString("name"));
-                downloadTask.onProgressUpdate(30);
-                String albumCoverURL = ITuensServiceHandler.getAlbumCover(retval.getArtist(), retval.getTitle());
-                downloadTask.onProgressUpdate(50);
-                retval.setAlbumCoverURL(albumCoverURL);
-                retval.setCoverBitmap(loadAlbumCover(retval.getAlbumCoverURL()));
-                downloadTask.onProgressUpdate(80);
-                retval.setTracklist(getTracklist(albumDetails.getJSONArray("tracklist")));
+                retval = addDetailsToAlbum(retval, albumDetails, downloadTask);
                 return retval;
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -64,38 +56,87 @@ public class DiscogsServiceHandler extends ServiceHandler {
         return retval;
     }
 
-    private static Tracklist getTracklist(JSONArray tracklist){
+    private static Album addDetailsToAlbum(Album album, JSONObject json, DownloadTask downloadTask) throws JSONException {
+        Resources resources = ApplicationContextHelper.getAppContext().getResources();
+        downloadTask.onProgressUpdate(20);
+
+
+        String titlePlaceholder = resources.getString(R.string.album_placeholder_title);
+        String albumTitle = JSONHelper.getString("title", titlePlaceholder, json);
+        album.setTitle(albumTitle);
+
+        JSONArray albumGenres = JSONHelper.getJSONArray("styles", null, json);
+        String albumGenre = resources.getString(R.string.album_placeholder_genre);
+        if (albumGenres != null) {
+            albumGenre = albumGenres.getString(0);
+        }
+        album.setGenre(albumGenre);
+
+        JSONArray albumArtists = JSONHelper.getJSONArray("artists", null, json);
+        JSONObject firstArtist = albumArtists.getJSONObject(0);
+        String artistPlaceholder = resources.getString(R.string.album_placeholder_artist);
+        String albumArtist = JSONHelper.getString("name", "", firstArtist);
+        album.setArtist(albumArtist);
+
+        downloadTask.onProgressUpdate(30);
+        String albumCoverURL = ITuensServiceHandler.getAlbumCover(albumArtist, albumTitle);
+        downloadTask.onProgressUpdate(50);
+        album.setAlbumCoverURL(albumCoverURL);
+        album.setCoverBitmap(loadAlbumCover(album.getAlbumCoverURL()));
+        downloadTask.onProgressUpdate(80);
+
+        JSONArray albumTrackList = JSONHelper.getJSONArray("tracklist",null,json);
+        Tracklist tracklist = getTracklist(albumTrackList);
+        album.setTracklist(tracklist);
+
+        return album;
+    }
+
+    private static Tracklist getTracklist(JSONArray tracklist) {
         Tracklist tracks = new Tracklist();
+
+        if (tracklist==null){
+            return tracks;
+        }
 
         for (int i = 0; i < tracklist.length(); i++) {
             try {
                 JSONObject track = tracklist.getJSONObject(i);
                 tracks.addTrack(getTrack(track));
-            }
-            catch (JSONException jse){
+            } catch (JSONException jse) {
                 jse.printStackTrace();
             }
         }
         return tracks;
     }
 
-    private static Track getTrack(JSONObject track) throws JSONException{
+    private static Track getTrack(JSONObject track) throws JSONException {
         Track retval = new Track();
 
-        String duration = track.getString("duration");
+        String duration = JSONHelper.getString("duration", "", track);
         retval.setDuration(durationToSeconds(duration));
 
-        retval.setTrackNumber(track.getInt("position"));
-        retval.setName(track.getString("title"));
+        int position= JSONHelper.getInt("position", 0, track);
+        retval.setTrackNumber(position);
+
+        String title = JSONHelper.getString("title","-",track);
+        retval.setName(title);
+        
         return retval;
     }
 
-    private static int durationToSeconds(String duration){
+    private static int durationToSeconds(String duration) {
+        String timeRegex = "^[0-9]+:[0-9]{2}$";
+        boolean matches = duration.matches(timeRegex);
+        if(!matches){
+            return 0;
+        }
         String[] splitted = duration.split(":");
         int seconds = Integer.valueOf(splitted[1]);
-        int minutes = (60*Integer.valueOf(splitted[0]));
+        int minutes = (60 * Integer.valueOf(splitted[0]));
         return minutes + seconds;
     }
+
     private static Bitmap loadAlbumCover(String url) {
         if (url != null && !url.equals("")) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()

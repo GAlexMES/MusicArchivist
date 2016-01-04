@@ -4,6 +4,10 @@
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>
 
+    <string name="album_placeholder_artist">Artist</string>
+    <string name="album_placeholder_title">Title</string>
+    <string name="album_placeholder_genre">Genre</string>
+
     <string name="nav_drawer_newest">Newest</string>
     <string name="nav_drawer_artists">Artists</string>
     <string name="nav_drawer_albums">Albums</string>
