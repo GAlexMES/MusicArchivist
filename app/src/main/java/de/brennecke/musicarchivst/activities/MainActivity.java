@@ -272,6 +272,11 @@ public class MainActivity extends AppCompatActivity implements View.OnLayoutChan
         if (typeCodeButton != null) {
             typeCodeButton.setOnClickListener(new FABNewAlbumListener(this));
         }
+
+        FloatingActionButton typeInformationButton = (FloatingActionButton) findViewById(R.id.type_information);
+        if (typeInformationButton != null) {
+            typeInformationButton.setOnClickListener(new FABNewAlbumListener(this));
+        }
     }
 
     private boolean initAd(){
@@ -296,6 +301,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLayoutChan
                 String contents = intent.getStringExtra("SCAN_RESULT");
                 Intent intentMain = new Intent(this, EditAlbumDataActivity.class);
                 intentMain.putExtra("BARCODE", contents);
+                intentMain.putExtra("MODE", EditAlbumDataActivity.MODE.EDIT);
                 startActivity(intentMain);
             } else {
                 Toast toast = Toast.makeText(this, "Could not scan correctly!", Toast.LENGTH_LONG);

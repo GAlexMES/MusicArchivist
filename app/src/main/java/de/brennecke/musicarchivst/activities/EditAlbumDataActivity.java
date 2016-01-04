@@ -37,9 +37,7 @@ import de.brennecke.musicarchivst.view.TracklistHandler;
  * Created by Alexander on 27.10.2015.
  */
 public class EditAlbumDataActivity extends AppCompatActivity implements View.OnFocusChangeListener, View.OnClickListener {
-    private enum MODE {SHOW, EDIT}
-
-    ;
+    public enum MODE {SHOW, EDIT}
 
     private Menu menu;
 
@@ -71,14 +69,18 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
         main = (FrameLayout) findViewById(R.id.content_frame);
         initUI();
         String barcode = getIntent().getStringExtra("BARCODE");
+
         showExisting = getIntent().getBooleanExtra("SHOW_EXISTING", false);
         if (showExisting) {
             album = Exchange.getInstance().getCurrentAlbum();
             updateUI();
         } else if (barcode != null) {
             showResult(barcode);
-            changeUI(MODE.EDIT);
         }
+
+        int showModeAsInt = getIntent().getIntExtra("MODE",MODE.SHOW.ordinal());
+        MODE showMode = MODE.values()[showModeAsInt];
+        changeUI(showMode);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
@@ -261,7 +263,6 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
             changeUI(MODE.EDIT);
             Log.d(TAG, "triggered UI to mode edit");
         }
-        isChangeable = !isChangeable;
     }
 
     private void changeUI(MODE mode) {
@@ -271,10 +272,12 @@ public class EditAlbumDataActivity extends AppCompatActivity implements View.OnF
             case EDIT:
                 fabIconID = R.drawable.ic_checked;
                 menuIconID = R.drawable.ic_save_white_24dp;
+                isChangeable = true;
                 break;
             case SHOW:
                 fabIconID =  R.drawable.ic_mode_edit_white_24dp;
                 menuIconID = fabIconID;
+                isChangeable = false;
                 break;
             default:
                 Log.e(TAG, "Unknown mode " + mode);
