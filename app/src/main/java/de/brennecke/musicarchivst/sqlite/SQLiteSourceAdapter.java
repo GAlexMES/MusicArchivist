@@ -1,7 +1,11 @@
 package de.brennecke.musicarchivst.sqlite;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.SQLException;
@@ -10,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
+
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -28,8 +33,12 @@ public class SQLiteSourceAdapter {
 
     private SQLiteDatabase database;
     private SQLiteHelper dbHelper;
+    private Activity activeActivity;
+
+
 
     public SQLiteSourceAdapter(Context context) {
+        activeActivity = ((Activity)context);
         dbHelper = new SQLiteHelper(context);
     }
 

@@ -93,7 +93,7 @@ public class AlbumListFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         Album selected = albumMap.get(sortedAlbums[position]);
-        AlbumPopupMenu apm = new AlbumPopupMenu(selected,view,getActivity());
+        AlbumPopupMenu apm = new AlbumPopupMenu(selected,view, getActivity());
         apm.showMenu();
         return true;
     }

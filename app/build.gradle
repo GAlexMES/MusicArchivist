@@ -1,27 +1,33 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.android.databinding'
+
 
 android {
 
     lintOptions {
         abortOnError false
     }
+
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "de.brennecke.musicarchivst"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 5
-        versionName "0.0.5"
+        versionCode 7
+        versionName "0.0.7"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             zipAlignEnabled false
         }
+    }
+
+    dataBinding {
+        enabled = true
     }
 }
 

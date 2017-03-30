@@ -1,22 +1,29 @@
 package de.brennecke.musicarchivst.activities;
 
+
+import android.Manifest;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +35,8 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import de.brennecke.musicarchivst.R;
@@ -42,24 +51,32 @@ import de.brennecke.musicarchivst.model.Album;
 import de.brennecke.musicarchivst.sqlite.SQLiteSourceAdapter;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnLayoutChangeListener{
+public class MainActivity extends AppCompatActivity implements View.OnLayoutChangeListener {
 
     private SearchView searchView;
     private DrawerLayout drawerLayout;
     private NavigationView navigationDrawer;
     private ActionBarDrawerToggle drawerToggle;
     private Toolbar toolbar;
-
     private MenuItem currentSelectedItem;
 
     private String MINE_TEST_DEVICE_ID = "55EB28184A0F147FB6A8E2FF0DCC64A9";
 
+
     private boolean replaceNavDrawerHeader = true;
     private boolean initAds = true;
+    private boolean waitingForPemission = true;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("MainActivity", "Starting application");
+        init();
+    }
+
+    private void init(){
         setContentView(R.layout.activity_main);
         initToolbar();
         initFABButtons();
@@ -114,17 +131,19 @@ public class MainActivity extends AppCompatActivity implements View.OnLayoutChan
 
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-        if(replaceNavDrawerHeader){
+        if (replaceNavDrawerHeader) {
             SQLiteSourceAdapter sqLiteSourceAdapter = new SQLiteSourceAdapter(this);
             sqLiteSourceAdapter.open();
             Bitmap bm = sqLiteSourceAdapter.getFavoriteAlbumCover();
             replaceNavDrawerHeader = !setImageToNavigationDrawer(bm);
         }
 
-        if(initAds){
-            initAds=!initAd();
+        if (initAds) {
+            initAds = !initAd();
         }
     }
+
+
 
     private ActionBarDrawerToggle setupDrawerToggle() {
         return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
@@ -279,12 +298,11 @@ public class MainActivity extends AppCompatActivity implements View.OnLayoutChan
         }
     }
 
-    private boolean initAd(){
+    private boolean initAd() {
         AdView mAdView = (AdView) findViewById(R.id.adView);
-        if(mAdView==null){
+        if (mAdView == null) {
             return false;
-        }
-        else {
+        } else {
             AdRequest request = new AdRequest.Builder()
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                     .addTestDevice(MINE_TEST_DEVICE_ID)
